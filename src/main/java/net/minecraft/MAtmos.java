@@ -201,7 +201,7 @@ public class MAtmos implements MatmosMod {
 
 	private void printMessage(String var1) {
 		if(this.mc.player != null) {
-			this.mc.player.sendChatMessage("(MAtmos) " + var1);
+			this.mc.player.sendMessage("(MAtmos) " + var1);
 		}
 
 		this.printMessageSilent(var1);
