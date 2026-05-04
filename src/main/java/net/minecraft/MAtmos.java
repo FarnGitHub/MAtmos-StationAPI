@@ -36,7 +36,7 @@ public class MAtmos implements MatmosMod {
 	MAtDataGatherer dataGatherer;
 	MAtSoundManagerBase soundManager;
 	MAtOnlineDatabaseFetcher onlineDatabaseFetcher;
-	private Ha3KeyManager keyManager;
+	public Ha3KeyManager keyManager;
 	public KeyBinding matmosKeyBinding = new KeyBinding("key.matmos", 65);
 	public Ha3Scroller scroller;
 	private boolean useOnlineDatabase;

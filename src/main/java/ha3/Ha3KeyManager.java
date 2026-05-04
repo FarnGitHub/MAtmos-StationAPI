@@ -7,7 +7,7 @@ import net.minecraft.client.option.KeyBinding;
 
 public class Ha3KeyManager {
 	MatmosMod mod;
-	HashMap<KeyBinding, Ha3KeyBinding> keys = new HashMap<>();
+	public HashMap<KeyBinding, Ha3KeyBinding> keys = new HashMap<>();
 
 	public Ha3KeyManager(MatmosMod mod) {
 		this.mod = mod;
@@ -19,8 +19,9 @@ public class Ha3KeyManager {
 	}
 
 	public void handleKeyDown(KeyBinding key) {
-		if(this.keys.containsKey(key))
+		if(this.keys.containsKey(key)) {
 			this.keys.get(key).handleBefore();
+		}
 	}
 
 	public void handleRuntime() {
