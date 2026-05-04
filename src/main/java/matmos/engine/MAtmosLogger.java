@@ -8,6 +8,7 @@ public class MAtmosLogger {
 	}
 
 	public static void notice(String var0) {
-		System.out.println(var0);
+		if(isActive)
+			System.out.println(var0);
 	}
 }
