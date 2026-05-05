@@ -19,8 +19,9 @@ public class Ha3KeyManager {
 	}
 
 	public void handleKeyDown(KeyBinding key) {
-		if(this.keys.containsKey(key)) {
+		try {
 			this.keys.get(key).handleBefore();
+		} catch (NullPointerException ignored) {
 		}
 	}
 

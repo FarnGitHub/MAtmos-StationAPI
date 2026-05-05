@@ -1,15 +1,16 @@
 package farn.matmos;
 
+import net.mine_diver.unsafeevents.listener.ListenerPriority;
 import net.minecraft.MAtmos;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.option.KeyBinding;
 import net.modificationstation.stationapi.api.client.event.keyboard.KeyStateChangedEvent;
-import net.modificationstation.stationapi.api.client.event.option.KeyBindingEvent;
 import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegisterEvent;
 import net.modificationstation.stationapi.api.event.init.InitFinishedEvent;
 import org.lwjgl.input.Keyboard;
 
+@SuppressWarnings("unused")
 public class MatmosStationAPI {
 
     @EventListener
@@ -34,10 +35,5 @@ public class MatmosStationAPI {
                 }
             }
         }
-    }
-
-    public static String apron$fixSheetPackage(String originalName) {
-        String newName = originalName.split("\\.")[0];
-        return "net.minecraft." + newName;
     }
 }

@@ -91,6 +91,7 @@ dependencies {
         exclude group: "babric", module: "fabric-loader"
     }
 
+
     if (project.hasProperty("modmenu_version")) {
         modImplementation("net.danygames2014:modmenu:${project.modmenu_version}") {
             transitive = false

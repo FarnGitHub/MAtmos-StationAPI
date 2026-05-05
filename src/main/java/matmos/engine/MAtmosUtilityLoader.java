@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Objects;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -14,6 +15,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+@SuppressWarnings("unused")
 public class MAtmosUtilityLoader {
 	MAtmosKnowledge knowledgeWorkstation;
 	static final String NAME = "name";
@@ -70,19 +72,11 @@ public class MAtmosUtilityLoader {
 		try {
 			parseXML(var0, var1, var2);
 			var1.close();
-		} catch (XMLStreamException var7) {
+		} catch (XMLStreamException | NumberFormatException var7) {
 			try {
 				var1.close();
 			} catch (IOException var6) {
 				var6.printStackTrace();
-			}
-
-			throw new MAtmosException();
-		} catch (NumberFormatException var8) {
-			try {
-				var1.close();
-			} catch (IOException var5) {
-				var5.printStackTrace();
 			}
 
 			throw new MAtmosException();
@@ -102,44 +96,43 @@ public class MAtmosUtilityLoader {
 			if(var5.isStartElement()) {
 				StartElement var6 = var5.asStartElement();
 				String var7;
-				if(var6.getName().getLocalPart() == "dynamic") {
+				if(Objects.equals(var6.getName().getLocalPart(), "dynamic")) {
 					var7 = parxeXMLextractNameAttribute(var6);
 					if(var7 != null) {
 						parseXMLdynamic(var0, var4, var7, var2);
 					}
-				} else if(var6.getName().getLocalPart() == "list") {
+				} else if(Objects.equals(var6.getName().getLocalPart(), "list")) {
 					var7 = parxeXMLextractNameAttribute(var6);
 					if(var7 != null) {
 						parseXMLlist(var0, var4, var7, var2);
 					}
-				} else if(var6.getName().getLocalPart() == "condition") {
+				} else if(Objects.equals(var6.getName().getLocalPart(), "condition")) {
 					var7 = parxeXMLextractNameAttribute(var6);
 					if(var7 != null) {
 						parseXMLcondition(var0, var4, var7, var2);
 					}
-				} else if(var6.getName().getLocalPart() == "set") {
+				} else if(Objects.equals(var6.getName().getLocalPart(), "set")) {
 					var7 = parxeXMLextractNameAttribute(var6);
 					if(var7 != null) {
 						parseXMLset(var0, var4, var7, var2);
 					}
-				} else if(var6.getName().getLocalPart() == "event") {
+				} else if(Objects.equals(var6.getName().getLocalPart(), "event")) {
 					var7 = parxeXMLextractNameAttribute(var6);
 					if(var7 != null) {
 						parseXMLevent(var0, var4, var7, var2);
 					}
-				} else if(var6.getName().getLocalPart() == "machine") {
+				} else if(Objects.equals(var6.getName().getLocalPart(), "machine")) {
 					var7 = parxeXMLextractNameAttribute(var6);
 					if(var7 != null) {
 						parseXMLmachine(var0, var4, var7, var2);
 					}
 				}
-			} else if(var5.isEndElement()) {
 			}
 		}
 
 	}
 
-	private static String parxeXMLextractNameAttribute(StartElement var0) throws XMLStreamException {
+	private static String parxeXMLextractNameAttribute(StartElement var0) {
 		String var1 = null;
 		Iterator var2 = var0.getAttributes();
 
@@ -164,13 +157,13 @@ public class MAtmosUtilityLoader {
 				if(var3.isStartElement()) {
 					StartElement var4 = var3.asStartElement();
 					String var5 = var4.getName().getLocalPart();
-					if(var5 == "nickname") {
+					if(Objects.equals(var5, "nickname")) {
 						var2.nickname = pickupNextEventData(var1);
-					} else if(var5 == "description") {
+					} else if(Objects.equals(var5, "description")) {
 						var2.description = pickupNextEventData(var1);
-					} else if(var5 == "icon") {
+					} else if(Objects.equals(var5, "icon")) {
 						var2.icon = pickupNextEventData(var1);
-					} else if(var5 == "meta") {
+					} else if(Objects.equals(var5, "meta")) {
 						var2.meta = pickupNextEventData(var1);
 					}
 				}
@@ -180,7 +173,7 @@ public class MAtmosUtilityLoader {
 				}
 
 				EndElement var6 = var3.asEndElement();
-				if(var6.getName().getLocalPart() != "descriptible") {
+				if(!Objects.equals(var6.getName().getLocalPart(), "descriptible")) {
 					continue;
 				}
 
@@ -209,16 +202,16 @@ public class MAtmosUtilityLoader {
 
 		while(var1.hasNext()) {
 			XMLEvent var6 = var1.nextEvent();
-			if(!var4 && !var3 && var6.isEndElement() && var6.asEndElement().getName().getLocalPart() == "dynamic") {
+			if(!var4 && !var3 && var6.isEndElement() && Objects.equals(var6.asEndElement().getName().getLocalPart(), "dynamic")) {
 				return false;
 			}
 
 			if(var6.isStartElement()) {
 				StartElement var7 = var6.asStartElement();
 				String var8 = var7.getName().getLocalPart();
-				if(var8 == "descriptible") {
+				if(Objects.equals(var8, "descriptible")) {
 					parseXMLdescriptible(var0, var1, var5);
-				} else if(var8 == "entry") {
+				} else if(Objects.equals(var8, "entry")) {
 					Iterator var9 = var7.getAttributes();
 
 					while(var9.hasNext()) {
@@ -232,7 +225,7 @@ public class MAtmosUtilityLoader {
 
 			if(var6.isEndElement()) {
 				EndElement var11 = var6.asEndElement();
-				if(var11.getName().getLocalPart() == "dynamic") {
+				if(Objects.equals(var11.getName().getLocalPart(), "dynamic")) {
 					return true;
 				}
 			}
@@ -259,16 +252,16 @@ public class MAtmosUtilityLoader {
 
 		while(var1.hasNext()) {
 			XMLEvent var6 = var1.nextEvent();
-			if(!var4 && !var3 && var6.isEndElement() && var6.asEndElement().getName().getLocalPart() == "dynamic") {
+			if(!var4 && !var3 && var6.isEndElement() && Objects.equals(var6.asEndElement().getName().getLocalPart(), "dynamic")) {
 				return false;
 			}
 
 			if(var6.isStartElement()) {
 				StartElement var7 = var6.asStartElement();
 				String var8 = var7.getName().getLocalPart();
-				if(var8 == "descriptible") {
+				if(Objects.equals(var8, "descriptible")) {
 					parseXMLdescriptible(var0, var1, var5);
-				} else if(var8 == "constant") {
+				} else if(Objects.equals(var8, "constant")) {
 					String var9 = pickupNextEventData(var1);
 
 					try {
@@ -281,7 +274,7 @@ public class MAtmosUtilityLoader {
 
 			if(var6.isEndElement()) {
 				EndElement var12 = var6.asEndElement();
-				if(var12.getName().getLocalPart() == "list") {
+				if(Objects.equals(var12.getName().getLocalPart(), "list")) {
 					return true;
 				}
 			}
@@ -308,24 +301,24 @@ public class MAtmosUtilityLoader {
 
 		while(var1.hasNext()) {
 			XMLEvent var6 = var1.nextEvent();
-			if(!var4 && !var3 && var6.isEndElement() && var6.asEndElement().getName().getLocalPart() == "condition") {
+			if(!var4 && !var3 && var6.isEndElement() && Objects.equals(var6.asEndElement().getName().getLocalPart(), "condition")) {
 				return false;
 			}
 
 			if(var6.isStartElement()) {
 				StartElement var7 = var6.asStartElement();
 				String var8 = var7.getName().getLocalPart();
-				if(var8 == "descriptible") {
+				if(Objects.equals(var8, "descriptible")) {
 					parseXMLdescriptible(var0, var1, var5);
-				} else if(var8 == "sheet") {
+				} else if(Objects.equals(var8, "sheet")) {
 					var5.setSheet(pickupNextEventData(var1));
-				} else if(var8 == "key") {
+				} else if(Objects.equals(var8, "key")) {
 					var5.setKey(Integer.parseInt(pickupNextEventData(var1)));
-				} else if(var8 == "dynamickey") {
+				} else if(Objects.equals(var8, "dynamickey")) {
 					var5.setDynamic(pickupNextEventData(var1));
-				} else if(var8 == "symbol") {
+				} else if(Objects.equals(var8, "symbol")) {
 					var5.setSymbol(pickupNextEventData(var1));
-				} else if(var8 == "constant") {
+				} else if(Objects.equals(var8, "constant")) {
 					String var9 = pickupNextEventData(var1);
 
 					try {
@@ -333,14 +326,14 @@ public class MAtmosUtilityLoader {
 					} catch (NumberFormatException var11) {
 						var5.setConstant((int)Float.parseFloat(var9));
 					}
-				} else if(var8 == "list") {
+				} else if(Objects.equals(var8, "list")) {
 					var5.setList(pickupNextEventData(var1));
 				}
 			}
 
 			if(var6.isEndElement()) {
 				EndElement var12 = var6.asEndElement();
-				if(var12.getName().getLocalPart() == "condition") {
+				if(Objects.equals(var12.getName().getLocalPart(), "condition")) {
 					return true;
 				}
 			}
@@ -367,25 +360,25 @@ public class MAtmosUtilityLoader {
 
 		while(var1.hasNext()) {
 			XMLEvent var6 = var1.nextEvent();
-			if(!var4 && !var3 && var6.isEndElement() && var6.asEndElement().getName().getLocalPart() == "set") {
+			if(!var4 && !var3 && var6.isEndElement() && Objects.equals(var6.asEndElement().getName().getLocalPart(), "set")) {
 				return false;
 			}
 
 			if(var6.isStartElement()) {
 				StartElement var7 = var6.asStartElement();
 				String var8 = var7.getName().getLocalPart();
-				if(var8 == "descriptible") {
+				if(Objects.equals(var8, "descriptible")) {
 					parseXMLdescriptible(var0, var1, var5);
-				} else if(var8 == "truepart") {
+				} else if(Objects.equals(var8, "truepart")) {
 					var5.addCondition(pickupNextEventData(var1), true);
-				} else if(var8 == "falsepart") {
+				} else if(Objects.equals(var8, "falsepart")) {
 					var5.addCondition(pickupNextEventData(var1), false);
 				}
 			}
 
 			if(var6.isEndElement()) {
 				EndElement var9 = var6.asEndElement();
-				if(var9.getName().getLocalPart() == "set") {
+				if(Objects.equals(var9.getName().getLocalPart(), "set")) {
 					return true;
 				}
 			}
@@ -412,33 +405,33 @@ public class MAtmosUtilityLoader {
 
 		while(var1.hasNext()) {
 			XMLEvent var6 = var1.nextEvent();
-			if(!var4 && !var3 && var6.isEndElement() && var6.asEndElement().getName().getLocalPart() == "event") {
+			if(!var4 && !var3 && var6.isEndElement() && Objects.equals(var6.asEndElement().getName().getLocalPart(), "event")) {
 				return false;
 			}
 
 			if(var6.isStartElement()) {
 				StartElement var7 = var6.asStartElement();
 				String var8 = var7.getName().getLocalPart();
-				if(var8 == "descriptible") {
+				if(Objects.equals(var8, "descriptible")) {
 					parseXMLdescriptible(var0, var1, var5);
-				} else if(var8 == "volmin") {
+				} else if(Objects.equals(var8, "volmin")) {
 					var5.volMin = Float.parseFloat(pickupNextEventData(var1));
-				} else if(var8 == "volmax") {
+				} else if(Objects.equals(var8, "volmax")) {
 					var5.volMax = Float.parseFloat(pickupNextEventData(var1));
-				} else if(var8 == "pitchmin") {
+				} else if(Objects.equals(var8, "pitchmin")) {
 					var5.pitchMin = Float.parseFloat(pickupNextEventData(var1));
-				} else if(var8 == "pitchmax") {
+				} else if(Objects.equals(var8, "pitchmax")) {
 					var5.pitchMax = Float.parseFloat(pickupNextEventData(var1));
-				} else if(var8 == "metasound") {
+				} else if(Objects.equals(var8, "metasound")) {
 					var5.metaSound = Integer.parseInt(pickupNextEventData(var1));
-				} else if(var8 == "path") {
+				} else if(Objects.equals(var8, "path")) {
 					var5.paths.add(pickupNextEventData(var1));
 				}
 			}
 
 			if(var6.isEndElement()) {
 				EndElement var9 = var6.asEndElement();
-				if(var9.getName().getLocalPart() == "event") {
+				if(Objects.equals(var9.getName().getLocalPart(), "event")) {
 					return true;
 				}
 			}
@@ -465,25 +458,25 @@ public class MAtmosUtilityLoader {
 
 		while(var1.hasNext()) {
 			XMLEvent var6 = var1.nextEvent();
-			if(!var4 && !var3 && var6.isEndElement() && var6.asEndElement().getName().getLocalPart() == "machine") {
+			if(!var4 && !var3 && var6.isEndElement() && Objects.equals(var6.asEndElement().getName().getLocalPart(), "machine")) {
 				return false;
 			}
 
 			if(var6.isStartElement()) {
 				StartElement var7 = var6.asStartElement();
 				String var8 = var7.getName().getLocalPart();
-				if(var8 == "descriptible") {
+				if(Objects.equals(var8, "descriptible")) {
 					parseXMLdescriptible(var0, var1, var5);
-				} else if(var8 == "allow") {
+				} else if(Objects.equals(var8, "allow")) {
 					var5.addAllow(pickupNextEventData(var1));
-				} else if(var8 == "restrict") {
+				} else if(Objects.equals(var8, "restrict")) {
 					var5.addRestrict(pickupNextEventData(var1));
 				} else {
 					int var9;
-					if(var8 == "eventtimed") {
+					if(Objects.equals(var8, "eventtimed")) {
 						var9 = var5.addEventTimed();
 						parseXMLeventTimed(var5.getEventTimed(var9 - 1), var1);
-					} else if(var8 == "stream") {
+					} else if(Objects.equals(var8, "stream")) {
 						var9 = var5.addStream();
 						parseXMLstream(var5.getStream(var9 - 1), var1);
 					}
@@ -492,7 +485,7 @@ public class MAtmosUtilityLoader {
 
 			if(var6.isEndElement()) {
 				EndElement var10 = var6.asEndElement();
-				if(var10.getName().getLocalPart() == "machine") {
+				if(Objects.equals(var10.getName().getLocalPart(), "machine")) {
 					return true;
 				}
 			}
@@ -508,17 +501,17 @@ public class MAtmosUtilityLoader {
 				if(var2.isStartElement()) {
 					StartElement var3 = var2.asStartElement();
 					String var4 = var3.getName().getLocalPart();
-					if(var4 == "eventname") {
+					if(Objects.equals(var4, "eventname")) {
 						var0.event = pickupNextEventData(var1);
-					} else if(var4 == "volmod") {
+					} else if(Objects.equals(var4, "volmod")) {
 						var0.volMod = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "pitchmod") {
+					} else if(Objects.equals(var4, "pitchmod")) {
 						var0.pitchMod = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "delaystart") {
+					} else if(Objects.equals(var4, "delaystart")) {
 						var0.delayStart = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "delaymin") {
+					} else if(Objects.equals(var4, "delaymin")) {
 						var0.delayMin = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "delaymax") {
+					} else if(Objects.equals(var4, "delaymax")) {
 						var0.delayMax = Float.parseFloat(pickupNextEventData(var1));
 					}
 				}
@@ -528,7 +521,7 @@ public class MAtmosUtilityLoader {
 				}
 
 				EndElement var5 = var2.asEndElement();
-				if(var5.getName().getLocalPart() != "eventtimed") {
+				if(!Objects.equals(var5.getName().getLocalPart(), "eventtimed")) {
 					continue;
 				}
 
@@ -546,23 +539,23 @@ public class MAtmosUtilityLoader {
 				if(var2.isStartElement()) {
 					StartElement var3 = var2.asStartElement();
 					String var4 = var3.getName().getLocalPart();
-					if(var4 == "path") {
+					if(Objects.equals(var4, "path")) {
 						var0.path = pickupNextEventData(var1);
-					} else if(var4 == "volume") {
+					} else if(Objects.equals(var4, "volume")) {
 						var0.volume = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "pitch") {
+					} else if(Objects.equals(var4, "pitch")) {
 						var0.pitch = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "fadeintime") {
+					} else if(Objects.equals(var4, "fadeintime")) {
 						var0.fadeInTime = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "fadeouttime") {
+					} else if(Objects.equals(var4, "fadeouttime")) {
 						var0.fadeOutTime = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "delaybeforefadein") {
+					} else if(Objects.equals(var4, "delaybeforefadein")) {
 						var0.delayBeforeFadeIn = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "delaybeforefadeout") {
+					} else if(Objects.equals(var4, "delaybeforefadeout")) {
 						var0.delayBeforeFadeOut = Float.parseFloat(pickupNextEventData(var1));
-					} else if(var4 == "islooping") {
+					} else if(Objects.equals(var4, "islooping")) {
 						var0.isLooping = Integer.parseInt(pickupNextEventData(var1)) == 1;
-					} else if(var4 == "isusingpause") {
+					} else if(Objects.equals(var4, "isusingpause")) {
 						var0.isUsingPause = Integer.parseInt(pickupNextEventData(var1)) == 1;
 					}
 				}
@@ -572,7 +565,7 @@ public class MAtmosUtilityLoader {
 				}
 
 				EndElement var5 = var2.asEndElement();
-				if(var5.getName().getLocalPart() != "stream") {
+				if(!Objects.equals(var5.getName().getLocalPart(), "stream")) {
 					continue;
 				}
 

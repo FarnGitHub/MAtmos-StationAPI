@@ -17,8 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import matmos.engine.MAtmosException;
 import matmos.engine.MAtmosKnowledge;
@@ -125,79 +124,14 @@ public class MAtmos implements MatmosMod {
 		}
 	}
 
-	private void findSheetClasses() throws IOException {
-		ClassLoader var2 = Minecraft.class.getClassLoader();
-		if (!this.modDir.isDirectory()) {
-			throw new IllegalArgumentException("folder must be a Directory.");
-		} else {
-			File[] files = this.modDir.listFiles();
-
-			for(int index = 0; index < files.length; ++index) {
-				File file = files[index];
-				if (file.isDirectory() || file.isFile() && (file.getName().endsWith(".jar") || file.getName().endsWith(".zip"))) {
-					if (!file.isFile()) {
-						if (file.isDirectory()) {
-							File[] modsFile = file.listFiles();
-							if (modsFile != null) {
-								for(int index2 = 0; index2 < modsFile.length; ++index2) {
-									String var13 = modsFile[index2].getName();
-									if (modsFile[index2].isFile() && var13.startsWith("matcs_") && var13.endsWith(".class")) {
-										this.addSheetClass(var2, var13);
-									}
-								}
-							}
-						}
-					} else {
-						FileInputStream var8 = new FileInputStream(file);
-						ZipInputStream var9 = new ZipInputStream(var8);
-
-						while(true) {
-							ZipEntry var10 = var9.getNextEntry();
-							if (var10 == null) {
-								var9.close();
-								var8.close();
-								break;
-							}
-
-							String var7 = var10.getName();
-							if (!var10.isDirectory() && var7.startsWith("matcs_") && var7.endsWith(".class")) {
-								this.addSheetClass(var2, var7);
-							}
-						}
-					}
-				}
-			}
-
+	private void findSheetClasses() {
+		List<Object> listeners = FabricLoader.getInstance().getEntrypoints("matmos:custom_sheet", Object.class);
+		for(Object listener : listeners) {
+			if(!(listener instanceof MAtCustomSheet sheet)) continue;
+			this.customsheetsList.add(sheet);
+			this.printMessageSilent("Registered CustomSheet: " + sheet.getName());
 		}
 	}
-
-	private void addSheetClass(ClassLoader loader, String path) {
-		try {
-			path = MatmosStationAPI.apron$fixSheetPackage(path);
-			String newPath = path.split("\\.")[0];
-			if(newPath.contains("$")) {
-				return;
-			}
-
-			Package packag = MAtmos.class.getPackage();
-			if(packag != null) {
-				newPath = packag.getName() + "." + newPath;
-			}
-
-			Class<?> var5 = loader.loadClass(newPath);
-			if(!MAtCustomSheet.class.isAssignableFrom(var5)) {
-				return;
-			}
-
-			MAtCustomSheet var6 = (MAtCustomSheet)var5.newInstance();
-			this.customsheetsList.add(var6);
-			this.printMessageSilent("Registered CustomSheet: " + path);
-		} catch (Throwable var7) {
-			this.printMessageSilent("Failed to register CustomSheet: " + path);
-		}
-
-	}
-
 
 	private void printMessage(String var1) {
 		if(this.mc.player != null) {
@@ -265,7 +199,6 @@ public class MAtmos implements MatmosMod {
 	}
 
 	public void loadOnlineProcedure(InputStream var1) {
-		Minecraft var2 = this.mc;
 		String var3 = Minecraft.getRunDirectory().toString();
 		this.knowledge.patchKnowledge();
 
