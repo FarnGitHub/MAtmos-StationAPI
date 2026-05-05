@@ -1,9 +1,7 @@
 package net.minecraft;
 
 import farn.matmos.MatmosMod;
-import farn.matmos.MatmosStationAPI;
 import ha3.Ha3KeyManager;
-import ha3.Ha3Scroller;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,11 +19,9 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import matmos.engine.MAtmosException;
 import matmos.engine.MAtmosKnowledge;
-import matmos.engine.MAtmosLogger;
 import matmos.engine.MAtmosUtilityLoader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.option.KeyBinding;
 import net.modificationstation.stationapi.api.client.texture.TextureHelper;
 
 public class MAtmos implements MatmosMod {
@@ -35,7 +31,6 @@ public class MAtmos implements MatmosMod {
 	MAtSoundManagerBase soundManager;
 	MAtOnlineDatabaseFetcher onlineDatabaseFetcher;
 	public Ha3KeyManager keyManager;
-	public Ha3Scroller scroller;
 	public boolean useOnlineDatabase;
 	private String onlineDatabase;
 	public boolean doNotDump;
@@ -80,12 +75,10 @@ public class MAtmos implements MatmosMod {
 		this.initSheetClasses();
 		this.loadOptions();
 		this.loadKnowledge(true, false);
-		this.scroller = new MAtScroller(this);
 	}
 
 	public void OnTickInGame() {
 		if(this.mc.options.soundVolume != 0.0F || this.mc.options.musicVolume != 0.0F) {
-			this.frameThink();
 			if(this.mc.world.getProperties().getTime() != this.lastWorldTime) {
 				this.tickThink();
 				this.lastWorldTime = this.mc.world.getProperties().getTime();
@@ -349,11 +342,6 @@ public class MAtmos implements MatmosMod {
 			this.knowledge.routine();
 		}
 
-	}
-
-	public void frameThink() {
-		this.scroller.routine();
-		this.scroller.draw();
 	}
 
 	public void loadOptions() {

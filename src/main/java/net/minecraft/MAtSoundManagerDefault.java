@@ -7,10 +7,8 @@ import java.util.Random;
 import java.util.Map.Entry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sound.Sound;
-import net.minecraft.client.sound.SoundEntry;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.util.math.Vec3d;
-import net.modificationstation.stationapi.api.StationAPI;
 import paulscode.sound.SoundSystem;
 
 public class MAtSoundManagerDefault extends MAtSoundManagerBase {
