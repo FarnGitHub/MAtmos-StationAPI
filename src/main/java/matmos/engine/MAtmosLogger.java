@@ -1,14 +1,11 @@
 package matmos.engine;
 
-public class MAtmosLogger {
-	static boolean isActive = true;
+import net.minecraft.MAtmos;
 
-	public static void setActive(boolean var0) {
-		isActive = var0;
-	}
+public class MAtmosLogger {
 
 	public static void notice(String var0) {
-		if(isActive)
+		if(MAtmos.INSTANCE.showMAtmosLogger)
 			System.out.println(var0);
 	}
 }

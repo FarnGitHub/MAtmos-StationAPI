@@ -23,7 +23,7 @@ public class MAtmosKnowledge {
 	MAtmosData data = new MAtmosData();
 	MAtmosSoundManager soundManager = null;
 	MAtmosClock clock = new MAtmosClock();
-	private boolean isRunning = false;
+	public boolean isRunning = false;
 	int dataLastVersion = 0;
 	Random random = new Random(System.currentTimeMillis());
 
@@ -45,11 +45,10 @@ public class MAtmosKnowledge {
 		if(this.soundManager != null && !this.isRunning) {
 			this.reclaimKeyring();
 			this.isRunning = true;
-			Iterator var1 = this.machines.values().iterator();
 
-			while(var1.hasNext()) {
-				((MAtmosMachine)var1.next()).powerOn();
-			}
+            for (Object o : this.machines.values()) {
+                ((MAtmosMachine) o).powerOn();
+            }
 		}
 
 	}

@@ -15,6 +15,9 @@
   "entrypoints": {
     "stationapi:event_bus_client": [
       "farn.matmos.MatmosStationAPI"
+    ],
+    "modmenu": [
+      "farn.matmos.option.modmenu.ModMenuIntegration"
     ]
   },
   "icon": "assets/matmos/icon.png",

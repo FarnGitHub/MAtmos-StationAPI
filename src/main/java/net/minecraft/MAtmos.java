@@ -29,28 +29,25 @@ import net.minecraft.client.option.KeyBinding;
 import net.modificationstation.stationapi.api.client.texture.TextureHelper;
 
 public class MAtmos implements MatmosMod {
-	final String VERSION = "1.8.1 r6";
 	Minecraft mc;
-	MAtmosKnowledge knowledge;
+	public MAtmosKnowledge knowledge;
 	MAtDataGatherer dataGatherer;
 	MAtSoundManagerBase soundManager;
 	MAtOnlineDatabaseFetcher onlineDatabaseFetcher;
 	public Ha3KeyManager keyManager;
-	public KeyBinding matmosKeyBinding = new KeyBinding("key.matmos", 65);
 	public Ha3Scroller scroller;
-	private boolean useOnlineDatabase;
+	public boolean useOnlineDatabase;
 	private String onlineDatabase;
-	boolean doNotDump;
-	boolean showMAtmosLogger;
+	public boolean doNotDump;
+	public boolean showMAtmosLogger;
 	private boolean passedFirstTick;
 	private short knowsHowToChangeVolume;
-	private boolean shouldShowMusicHint;
+	public boolean shouldShowMusicHint;
 	private boolean knowsHowToChangeMusicVolume;
 	private long lastWorldTime;
 	boolean errorWhileLoadingKnowledge;
 	boolean errorWhileLoadingOnline;
 	private final LinkedList<MAtCustomSheet> customsheetsList = new LinkedList<>();
-	private final File modDir = new File(Minecraft.getRunDirectory(), "/mods/");
 	private final File optionsFile;
 	private final File expansionFolder;
 	public static final MAtmos INSTANCE = new MAtmos();
@@ -64,9 +61,7 @@ public class MAtmos implements MatmosMod {
 		this.errorWhileLoadingKnowledge = false;
 		this.errorWhileLoadingOnline = false;
 		this.mc = Minecraft.INSTANCE;
-		this.matmosKeyBinding = new KeyBinding("key.matmos", 65);
 		this.keyManager = new Ha3KeyManager(this);
-		this.keyManager.addKeyBinding(new MAtKey(this.matmosKeyBinding));
 		this.useOnlineDatabase = true;
 		this.shouldShowMusicHint = true;
 		this.showMAtmosLogger = true;
@@ -86,14 +81,6 @@ public class MAtmos implements MatmosMod {
 		this.loadOptions();
 		this.loadKnowledge(true, false);
 		this.scroller = new MAtScroller(this);
-	}
-
-	public String Version() {
-		return "1.8.1 r6";
-	}
-
-	public void KeyboardEvent(KeyBinding var1) {
-		this.keyManager.handleKeyDown(var1);
 	}
 
 	public void OnTickInGame() {
@@ -416,12 +403,11 @@ public class MAtmos implements MatmosMod {
 					}
 
 					if(var3[0].equals("instant_span_time")) {
-						this.dataGatherer.setInstantSpan((int)Math.floor((double)this.optionToFloat(var3[1])));
+						this.dataGatherer.setInstantSpan((int)Math.floor(this.optionToFloat(var3[1])));
 					}
 
 					if(var3[0].equals("show_engine_logger")) {
 						this.showMAtmosLogger = this.optionToBool(var3[1]);
-						MAtmosLogger.setActive(this.showMAtmosLogger);
 					}
 				} catch (Exception var4) {
 					System.out.println("Skipping bad option: " + var2);
