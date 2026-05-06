@@ -128,7 +128,6 @@ public class MAtSoundManagerDefault extends MAtSoundManagerBase {
 			this.settingsMusicVolume = musicVol;
 		} else {
 			if(volumeChanged || this.getCustomMusicVolume() != this.previousMusicVolume) {
-
                 for (String s : this.sourcesAsMusic) {
 					getSoundSystem().setVolume(s, this.getCustomMusicVolume() * this.settingsVolume);
                 }
