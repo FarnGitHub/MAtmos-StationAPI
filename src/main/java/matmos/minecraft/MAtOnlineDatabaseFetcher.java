@@ -1,4 +1,4 @@
-package net.minecraft;
+package matmos.minecraft;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -9,13 +9,11 @@ import java.net.URLConnection;
 import java.util.Scanner;
 
 public class MAtOnlineDatabaseFetcher extends Thread {
-	MAtmos mod;
 	URL url;
 
-	public MAtOnlineDatabaseFetcher(MAtmos var1) {
+	public MAtOnlineDatabaseFetcher() {
 		this.setName("MAtmos Online Database fetcher");
 		this.setDaemon(true);
-		this.mod = var1;
 	}
 
 	public void getDatabase(URL var1) {
@@ -29,20 +27,20 @@ public class MAtOnlineDatabaseFetcher extends Thread {
 
 	public void run() {
 		try {
-			URLConnection var1 = this.url.openConnection();
-			InputStream var2 = var1.getInputStream();
-			Scanner var3 = new Scanner(var2);
-			var3.useDelimiter("\\Z");
+			URLConnection url = this.url.openConnection();
+			InputStream input = url.getInputStream();
+			Scanner scan = new Scanner(input);
+			scan.useDelimiter("\\Z");
 			String var4 = "UTF-8";
-			String var5 = var3.next();
+			String var5 = scan.next();
 			ByteArrayInputStream var6 = new ByteArrayInputStream(var5.getBytes(var4));
-			this.mod.takeOnlineDatabase(var6);
+			MAtmos.takeOnlineDatabase(var6);
 		} catch (UnsupportedEncodingException var7) {
-			this.mod.printMessageSilent("Encoding exception.");
-			this.mod.failOnlineDatabase();
+			MAtmos.printMessageSilent("Encoding exception.");
+			MAtmos.failOnlineDatabase();
 		} catch (IOException var8) {
-			this.mod.printMessageSilent("I/O exception.");
-			this.mod.failOnlineDatabase();
+			MAtmos.printMessageSilent("I/O exception.");
+			MAtmos.failOnlineDatabase();
 		}
 
 	}

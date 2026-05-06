@@ -3,7 +3,6 @@ package matmos.engine;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import javax.xml.stream.XMLEventFactory;
@@ -13,16 +12,16 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.DTD;
 import javax.xml.transform.stream.StreamResult;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class MAtmosKnowledge {
-	HashMap dynamics;
-	HashMap lists;
-	HashMap conditions;
-	HashMap csets;
-	HashMap machines;
-	HashMap events;
+	HashMap<String, MAtmosDynamic> dynamics;
+	HashMap<String, MAtmosList> lists;
+	HashMap<String, MAtmosCondition> conditions;
+	HashMap<String, MAtmosConditionSet> csets;
+	HashMap<String, MAtmosMachine> machines;
+	HashMap<String, MAtmosEvent> events;
 	MAtmosData data = new MAtmosData();
 	MAtmosSoundManager soundManager = null;
-	MAtmosClock clock = new MAtmosClock();
 	public boolean isRunning = false;
 	int dataLastVersion = 0;
 	Random random = new Random(System.currentTimeMillis());
@@ -33,12 +32,12 @@ public class MAtmosKnowledge {
 
 	public void patchKnowledge() {
 		this.turnOff();
-		this.dynamics = new HashMap();
-		this.lists = new HashMap();
-		this.conditions = new HashMap();
-		this.csets = new HashMap();
-		this.machines = new HashMap();
-		this.events = new HashMap();
+		this.dynamics = new HashMap<>();
+		this.lists = new HashMap<>();
+		this.conditions = new HashMap<>();
+		this.csets = new HashMap<>();
+		this.machines = new HashMap<>();
+		this.events = new HashMap<>();
 	}
 
 	public void turnOn() {
@@ -46,8 +45,8 @@ public class MAtmosKnowledge {
 			this.reclaimKeyring();
 			this.isRunning = true;
 
-            for (Object o : this.machines.values()) {
-                ((MAtmosMachine) o).powerOn();
+            for (MAtmosMachine o : this.machines.values()) {
+                 o.powerOn();
             }
 		}
 
@@ -56,11 +55,10 @@ public class MAtmosKnowledge {
 	public void turnOff() {
 		if(this.isRunning) {
 			this.isRunning = false;
-			Iterator var1 = this.machines.values().iterator();
 
-			while(var1.hasNext()) {
-				((MAtmosMachine)var1.next()).powerOff();
-			}
+            for (MAtmosMachine machine : this.machines.values()) {
+                machine.powerOff();
+            }
 		}
 
 	}
@@ -69,64 +67,56 @@ public class MAtmosKnowledge {
 		return this.isRunning;
 	}
 
-	public Set getDynamicsKeySet() {
+	public Set<String> getDynamicsKeySet() {
 		return this.dynamics.keySet();
 	}
 
-	public Set getListsKeySet() {
+	public Set<String> getListsKeySet() {
 		return this.lists.keySet();
 	}
 
-	public Set getConditionsKeySet() {
+	public Set<String> getConditionsKeySet() {
 		return this.conditions.keySet();
 	}
 
-	public Set getConditionSetsKeySet() {
+	public Set<String> getConditionSetsKeySet() {
 		return this.csets.keySet();
 	}
 
-	public Set getMachinesKeySet() {
+	public Set<String> getMachinesKeySet() {
 		return this.machines.keySet();
 	}
 
-	public Set getEventsKeySet() {
+	public Set<String> getEventsKeySet() {
 		return this.events.keySet();
 	}
 
 	public void reclaimKeyring() {
 		this.turnOff();
-		Iterator var1 = this.dynamics.values().iterator();
 
-		while(var1.hasNext()) {
-			((MAtmosDynamic)var1.next()).setKnowledge(this);
-		}
+        for (MAtmosDynamic mAtmosDynamic : this.dynamics.values()) {
+            mAtmosDynamic.setKnowledge(this);
+        }
 
-		var1 = this.conditions.values().iterator();
+        for (MAtmosCondition mAtmosCondition : this.conditions.values()) {
+            mAtmosCondition.setKnowledge(this);
+        }
 
-		while(var1.hasNext()) {
-			((MAtmosCondition)var1.next()).setKnowledge(this);
-		}
+        for (MAtmosConditionSet mAtmosConditionSet : this.csets.values()) {
+            mAtmosConditionSet.setKnowledge(this);
+        }
 
-		var1 = this.csets.values().iterator();
+        for (MAtmosMachine mAtmosMachine : this.machines.values()) {
+            mAtmosMachine.setKnowledge(this);
+        }
 
-		while(var1.hasNext()) {
-			((MAtmosConditionSet)var1.next()).setKnowledge(this);
-		}
-
-		var1 = this.machines.values().iterator();
-
-		while(var1.hasNext()) {
-			((MAtmosMachine)var1.next()).setKnowledge(this);
-		}
-
-		var1 = this.events.values().iterator();
-
-		while(var1.hasNext()) {
-			((MAtmosEvent)var1.next()).setKnowledge(this);
-		}
+        for (MAtmosEvent mAtmosEvent : this.events.values()) {
+            mAtmosEvent.setKnowledge(this);
+        }
 
 	}
 
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public void retreiveKeyring(MAtmosKnowledge var1) {
 		if(!var1.isRunning) {
 			this.dynamics = (HashMap)var1.dynamics.clone();
@@ -145,16 +135,11 @@ public class MAtmosKnowledge {
 	}
 
 	public void cacheSounds() {
-		Iterator var1 = this.events.values().iterator();
 
-		while(var1.hasNext()) {
-			((MAtmosEvent)var1.next()).cacheSounds();
-		}
+        for (MAtmosEvent mAtmosEvent : this.events.values()) {
+            mAtmosEvent.cacheSounds();
+        }
 
-	}
-
-	public void setClock(MAtmosClock var1) {
-		this.clock = var1;
 	}
 
 	public void setData(MAtmosData var1) {
@@ -163,26 +148,23 @@ public class MAtmosKnowledge {
 	}
 
 	public long getTimeMillis() {
-		return this.clock.getTimeMillis();
+		return System.currentTimeMillis();
 	}
 
 	void applySheetFlagNeedsTesting() {
-		Iterator var1 = this.conditions.values().iterator();
 
-		while(var1.hasNext()) {
-			((MAtmosCondition)var1.next()).flagNeedsTesting();
-		}
+        for (MAtmosCondition mAtmosCondition : this.conditions.values()) {
+            mAtmosCondition.flagNeedsTesting();
+        }
 
-		var1 = this.dynamics.values().iterator();
-
-		while(var1.hasNext()) {
-			((MAtmosDynamic)var1.next()).flagNeedsTesting();
-		}
+        for (MAtmosDynamic mAtmosDynamic : this.dynamics.values()) {
+            mAtmosDynamic.flagNeedsTesting();
+        }
 
 	}
 
 	public MAtmosEvent getEvent(String var1) {
-		return (MAtmosEvent)this.events.get(var1);
+		return this.events.get(var1);
 	}
 
 	public boolean addEvent(String var1) {
@@ -190,7 +172,7 @@ public class MAtmosKnowledge {
 			return false;
 		} else {
 			this.events.put(var1, new MAtmosEvent(this));
-			((MAtmosEvent)this.events.get(var1)).nickname = var1;
+			this.events.get(var1).nickname = var1;
 			return true;
 		}
 	}
@@ -212,35 +194,30 @@ public class MAtmosKnowledge {
 		} else {
 			this.events.put(var2, this.events.get(var1));
 			this.events.remove(var1);
-			((MAtmosEvent)this.events.get(var2)).nickname = var2;
-			Iterator var3 = this.machines.values().iterator();
+			this.events.get(var2).nickname = var2;
 
-			while(var3.hasNext()) {
-				Iterator var4 = ((MAtmosMachine)var3.next()).etimes.iterator();
-
-				while(var4.hasNext()) {
-					MAtmosEventTimed var5 = (MAtmosEventTimed)var4.next();
-					if(var5.event.equals(var1)) {
-						var5.event = var2;
-					}
-				}
-			}
+            for (MAtmosMachine mAtmosMachine : this.machines.values()) {
+                for (MAtmosEventTimed timed : mAtmosMachine.etimes) {
+                    if (timed.event.equals(var1)) {
+						timed.event = var2;
+                    }
+                }
+            }
 
 			return true;
 		}
 	}
 
 	void applyDynamicFlagNeedsTesting() {
-		Iterator var1 = this.conditions.values().iterator();
 
-		while(var1.hasNext()) {
-			((MAtmosCondition)var1.next()).flagNeedsTesting();
-		}
+        for (MAtmosCondition mAtmosCondition : this.conditions.values()) {
+            mAtmosCondition.flagNeedsTesting();
+        }
 
 	}
 
 	public MAtmosDynamic getDynamic(String var1) {
-		return (MAtmosDynamic)this.dynamics.get(var1);
+		return this.dynamics.get(var1);
 	}
 
 	public boolean addDynamic(String var1) {
@@ -248,7 +225,7 @@ public class MAtmosKnowledge {
 			return false;
 		} else {
 			this.dynamics.put(var1, new MAtmosDynamic(this));
-			((MAtmosDynamic)this.dynamics.get(var1)).nickname = var1;
+			this.dynamics.get(var1).nickname = var1;
 			this.applyDynamicFlagNeedsTesting();
 			return true;
 		}
@@ -272,28 +249,26 @@ public class MAtmosKnowledge {
 		} else {
 			this.dynamics.put(var2, this.dynamics.get(var1));
 			this.dynamics.remove(var1);
-			((MAtmosDynamic)this.dynamics.get(var2)).nickname = var2;
-			Iterator var3 = this.conditions.values().iterator();
+			this.dynamics.get(var2).nickname = var2;
 
-			while(var3.hasNext()) {
-				((MAtmosCondition)var3.next()).replaceDynamicName(var1, var2);
-			}
+            for (MAtmosCondition mAtmosCondition : this.conditions.values()) {
+                mAtmosCondition.replaceDynamicName(var1, var2);
+            }
 
 			return true;
 		}
 	}
 
 	void applyListFlagNeedsTesting() {
-		Iterator var1 = this.conditions.values().iterator();
 
-		while(var1.hasNext()) {
-			((MAtmosCondition)var1.next()).flagNeedsTesting();
-		}
+        for (MAtmosCondition mAtmosCondition : this.conditions.values()) {
+            mAtmosCondition.flagNeedsTesting();
+        }
 
 	}
 
 	public MAtmosList getList(String var1) {
-		return (MAtmosList)this.lists.get(var1);
+		return this.lists.get(var1);
 	}
 
 	public boolean addList(String var1) {
@@ -301,7 +276,7 @@ public class MAtmosKnowledge {
 			return false;
 		} else {
 			this.lists.put(var1, new MAtmosList());
-			((MAtmosList)this.lists.get(var1)).nickname = var1;
+			this.lists.get(var1).nickname = var1;
 			this.applyDynamicFlagNeedsTesting();
 			return true;
 		}
@@ -325,28 +300,26 @@ public class MAtmosKnowledge {
 		} else {
 			this.lists.put(var2, this.lists.get(var1));
 			this.lists.remove(var1);
-			((MAtmosList)this.lists.get(var2)).nickname = var2;
-			Iterator var3 = this.conditions.values().iterator();
+			this.lists.get(var2).nickname = var2;
 
-			while(var3.hasNext()) {
-				((MAtmosCondition)var3.next()).replaceListName(var1, var2);
-			}
+            for (MAtmosCondition mAtmosCondition : this.conditions.values()) {
+                mAtmosCondition.replaceListName(var1, var2);
+            }
 
 			return true;
 		}
 	}
 
 	void applyDataConditionNeedsTesting() {
-		Iterator var1 = this.csets.values().iterator();
 
-		while(var1.hasNext()) {
-			((MAtmosConditionSet)var1.next()).flagNeedsTesting();
-		}
+        for (MAtmosConditionSet mAtmosConditionSet : this.csets.values()) {
+            mAtmosConditionSet.flagNeedsTesting();
+        }
 
 	}
 
 	public MAtmosCondition getDataCondition(String var1) {
-		return (MAtmosCondition)this.conditions.get(var1);
+		return this.conditions.get(var1);
 	}
 
 	public boolean addDataCondition(String var1) {
@@ -354,7 +327,7 @@ public class MAtmosKnowledge {
 			return false;
 		} else {
 			this.conditions.put(var1, new MAtmosCondition(this));
-			((MAtmosCondition)this.conditions.get(var1)).nickname = var1;
+			this.conditions.get(var1).nickname = var1;
 			this.applyDataConditionNeedsTesting();
 			return true;
 		}
@@ -368,12 +341,11 @@ public class MAtmosKnowledge {
 		} else {
 			this.conditions.put(var2, this.conditions.get(var1));
 			this.conditions.remove(var1);
-			((MAtmosCondition)this.conditions.get(var2)).nickname = var2;
-			Iterator var3 = this.csets.values().iterator();
+			this.conditions.get(var2).nickname = var2;
 
-			while(var3.hasNext()) {
-				((MAtmosConditionSet)var3.next()).replaceConditionName(var1, var2);
-			}
+            for (MAtmosConditionSet mAtmosConditionSet : this.csets.values()) {
+                mAtmosConditionSet.replaceConditionName(var1, var2);
+            }
 
 			this.applyDataConditionNeedsTesting();
 			return true;
@@ -391,16 +363,15 @@ public class MAtmosKnowledge {
 	}
 
 	void applyConditionSetNeedsTesting() {
-		Iterator var1 = this.machines.values().iterator();
 
-		while(var1.hasNext()) {
-			((MAtmosMachine)var1.next()).flagNeedsTesting();
-		}
+        for (MAtmosMachine mAtmosMachine : this.machines.values()) {
+            mAtmosMachine.flagNeedsTesting();
+        }
 
 	}
 
 	public MAtmosConditionSet getConditionSet(String var1) {
-		return (MAtmosConditionSet)this.csets.get(var1);
+		return this.csets.get(var1);
 	}
 
 	public boolean addConditionSet(String var1) {
@@ -408,7 +379,7 @@ public class MAtmosKnowledge {
 			return false;
 		} else {
 			this.csets.put(var1, new MAtmosConditionSet(this));
-			((MAtmosConditionSet)this.csets.get(var1)).nickname = var1;
+			this.csets.get(var1).nickname = var1;
 			this.applyConditionSetNeedsTesting();
 			return true;
 		}
@@ -422,12 +393,11 @@ public class MAtmosKnowledge {
 		} else {
 			this.csets.put(var2, this.csets.get(var1));
 			this.csets.remove(var1);
-			((MAtmosConditionSet)this.csets.get(var2)).nickname = var2;
-			Iterator var3 = this.machines.values().iterator();
+			this.csets.get(var2).nickname = var2;
 
-			while(var3.hasNext()) {
-				((MAtmosMachine)var3.next()).replaceSetName(var1, var2);
-			}
+            for (MAtmosMachine mAtmosMachine : this.machines.values()) {
+                mAtmosMachine.replaceSetName(var1, var2);
+            }
 
 			this.applyConditionSetNeedsTesting();
 			return true;
@@ -448,7 +418,7 @@ public class MAtmosKnowledge {
 	}
 
 	public MAtmosMachine getMachine(String var1) {
-		return (MAtmosMachine)this.machines.get(var1);
+		return this.machines.get(var1);
 	}
 
 	public boolean addMachine(String var1) {
@@ -456,7 +426,7 @@ public class MAtmosKnowledge {
 			return false;
 		} else {
 			this.machines.put(var1, new MAtmosMachine(this));
-			((MAtmosMachine)this.machines.get(var1)).nickname = var1;
+			this.machines.get(var1).nickname = var1;
 			this.applyMachineNeedsTesting();
 			return true;
 		}
@@ -480,7 +450,7 @@ public class MAtmosKnowledge {
 		} else {
 			this.machines.put(var2, this.machines.get(var1));
 			this.machines.remove(var1);
-			((MAtmosMachine)this.machines.get(var2)).nickname = var2;
+			this.machines.get(var2).nickname = var2;
 			this.applyConditionSetNeedsTesting();
 			return true;
 		}
@@ -494,40 +464,32 @@ public class MAtmosKnowledge {
 
 			this.dataLastVersion = this.data.updateVersion;
 			this.soundManager.routine();
-			Iterator var1 = this.machines.values().iterator();
 
-			while(var1.hasNext()) {
-				((MAtmosMachine)var1.next()).routine();
-			}
+            for (MAtmosMachine mAtmosMachine : this.machines.values()) {
+                mAtmosMachine.routine();
+            }
 		}
 
 	}
 
 	void evaluate() {
 		if(this.isRunning) {
-			Iterator var1 = this.dynamics.values().iterator();
 
-			while(var1.hasNext()) {
-				((MAtmosDynamic)var1.next()).evaluate();
-			}
+            for (MAtmosDynamic mAtmosDynamic : this.dynamics.values()) {
+                mAtmosDynamic.evaluate();
+            }
 
-			var1 = this.conditions.values().iterator();
+            for (MAtmosCondition mAtmosCondition : this.conditions.values()) {
+                mAtmosCondition.evaluate();
+            }
 
-			while(var1.hasNext()) {
-				((MAtmosCondition)var1.next()).evaluate();
-			}
+            for (MAtmosConditionSet mAtmosConditionSet : this.csets.values()) {
+                mAtmosConditionSet.evaluate();
+            }
 
-			var1 = this.csets.values().iterator();
-
-			while(var1.hasNext()) {
-				((MAtmosConditionSet)var1.next()).evaluate();
-			}
-
-			var1 = this.machines.values().iterator();
-
-			while(var1.hasNext()) {
-				((MAtmosMachine)var1.next()).evaluate();
-			}
+            for (MAtmosMachine mAtmosMachine : this.machines.values()) {
+                mAtmosMachine.evaluate();
+            }
 		}
 
 	}
@@ -553,7 +515,7 @@ public class MAtmosKnowledge {
 			var4.add(var3.createStartElement("", "", "dynamic"));
 			var4.add(var3.createAttribute("name", var9));
 			var4.add(var5);
-			((MAtmosDynamic)this.dynamics.get(var9)).serialize(var4);
+			this.dynamics.get(var9).serialize(var4);
 			var4.add(var3.createEndElement("", "", "dynamic"));
 		}
 
@@ -566,7 +528,7 @@ public class MAtmosKnowledge {
 			var4.add(var3.createStartElement("", "", "list"));
 			var4.add(var3.createAttribute("name", var9));
 			var4.add(var5);
-			((MAtmosList)this.lists.get(var9)).serialize(var4);
+			this.lists.get(var9).serialize(var4);
 			var4.add(var3.createEndElement("", "", "list"));
 		}
 
@@ -579,7 +541,7 @@ public class MAtmosKnowledge {
 			var4.add(var3.createStartElement("", "", "condition"));
 			var4.add(var3.createAttribute("name", var9));
 			var4.add(var5);
-			((MAtmosCondition)this.conditions.get(var9)).serialize(var4);
+			this.conditions.get(var9).serialize(var4);
 			var4.add(var3.createEndElement("", "", "condition"));
 		}
 
@@ -592,7 +554,7 @@ public class MAtmosKnowledge {
 			var4.add(var3.createStartElement("", "", "set"));
 			var4.add(var3.createAttribute("name", var9));
 			var4.add(var5);
-			((MAtmosConditionSet)this.csets.get(var9)).serialize(var4);
+			this.csets.get(var9).serialize(var4);
 			var4.add(var3.createEndElement("", "", "set"));
 		}
 
@@ -605,7 +567,7 @@ public class MAtmosKnowledge {
 			var4.add(var3.createStartElement("", "", "event"));
 			var4.add(var3.createAttribute("name", var9));
 			var4.add(var5);
-			((MAtmosEvent)this.events.get(var9)).serialize(var4);
+			this.events.get(var9).serialize(var4);
 			var4.add(var3.createEndElement("", "", "event"));
 		}
 
@@ -618,7 +580,7 @@ public class MAtmosKnowledge {
 			var4.add(var3.createStartElement("", "", "machine"));
 			var4.add(var3.createAttribute("name", var9));
 			var4.add(var5);
-			((MAtmosMachine)this.machines.get(var9)).serialize(var4);
+			this.machines.get(var9).serialize(var4);
 			var4.add(var3.createEndElement("", "", "machine"));
 		}
 

@@ -12,8 +12,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.DTD;
 import javax.xml.transform.stream.StreamResult;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class MAtmosData {
-	public HashMap<String, ArrayList<Integer>> sheets = new HashMap();
+	public HashMap<String, ArrayList<Integer>> sheets = new HashMap<>();
 	public int updateVersion = 0;
 
 	public void flagUpdate() {
@@ -21,44 +22,42 @@ public class MAtmosData {
 	}
 
 	public String createXML() throws XMLStreamException {
-		StreamResult var1 = new StreamResult(new StringWriter());
-		XMLOutputFactory var2 = XMLOutputFactory.newInstance();
-		XMLEventFactory var3 = XMLEventFactory.newInstance();
-		XMLEventWriter var4 = var2.createXMLEventWriter(var1);
-		DTD var5 = var3.createDTD("\n");
-		DTD var6 = var3.createDTD("\t");
-		DTD var7 = var3.createDTD("\n");
-		var4.add(var3.createStartDocument());
-		var4.add(var5);
-		var4.add(var3.createStartElement("", "", "contents"));
-		Iterator var8 = this.sheets.entrySet().iterator();
+		StreamResult result = new StreamResult(new StringWriter());
+		XMLOutputFactory output = XMLOutputFactory.newInstance();
+		XMLEventFactory event = XMLEventFactory.newInstance();
+		XMLEventWriter writer = output.createXMLEventWriter(result);
+		DTD space1 = event.createDTD("\n");
+		DTD seq = event.createDTD("\t");
+		DTD space2 = event.createDTD("\n");
+		writer.add(event.createStartDocument());
+		writer.add(space1);
+		writer.add(event.createStartElement("", "", "contents"));
 
-		while(var8.hasNext()) {
-			Entry var9 = (Entry)var8.next();
-			var4.add(var5);
-			var4.add(var3.createStartElement("", "", "sheet"));
-			var4.add(var3.createAttribute("name", (String)var9.getKey()));
-			var4.add(var3.createAttribute("size", ((ArrayList)var9.getValue()).size() + ""));
-			var4.add(var5);
-			int var10 = 0;
+        for (Entry<String, ArrayList<Integer>> entry : this.sheets.entrySet()) {
+            writer.add(space1);
+            writer.add(event.createStartElement("", "", "sheet"));
+            writer.add(event.createAttribute("name", entry.getKey()));
+            writer.add(event.createAttribute("size", entry.getValue().size() + ""));
+            writer.add(space1);
+            int index = 0;
 
-			for(Iterator var11 = ((ArrayList)var9.getValue()).iterator(); var11.hasNext(); ++var10) {
-				var4.add(var6);
-				var4.add(var3.createStartElement("", "", "key"));
-				var4.add(var3.createAttribute("id", var10 + ""));
-				var4.add(var3.createCharacters(((Integer)var11.next()).toString()));
-				var4.add(var3.createEndElement("", "", "key"));
-				var4.add(var5);
-			}
+            for (Iterator<Integer> var11 = entry.getValue().iterator(); var11.hasNext(); ++index) {
+                writer.add(seq);
+                writer.add(event.createStartElement("", "", "key"));
+                writer.add(event.createAttribute("id", index + ""));
+                writer.add(event.createCharacters(var11.next().toString()));
+                writer.add(event.createEndElement("", "", "key"));
+                writer.add(space1);
+            }
 
-			var4.add(var3.createEndElement("", "", "sheet"));
-		}
+            writer.add(event.createEndElement("", "", "sheet"));
+        }
 
-		var4.add(var5);
-		var4.add(var3.createEndElement("", "", "contents"));
-		var4.add(var7);
-		var4.add(var3.createEndDocument());
-		var4.close();
-		return var1.getWriter().toString();
+		writer.add(space1);
+		writer.add(event.createEndElement("", "", "contents"));
+		writer.add(space2);
+		writer.add(event.createEndDocument());
+		writer.close();
+		return result.getWriter().toString();
 	}
 }

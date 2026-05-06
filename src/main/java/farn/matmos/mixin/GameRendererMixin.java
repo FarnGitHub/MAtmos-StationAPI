@@ -1,6 +1,6 @@
 package farn.matmos.mixin;
 
-import net.minecraft.MAtmos;
+import matmos.minecraft.MAtmos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,6 +18,6 @@ public class GameRendererMixin {
     @Inject(method="onFrameUpdate", at = @At("TAIL"))
     public void renderFrameWhatever(float fl, CallbackInfo ci) {
         if(client.world != null)
-            MAtmos.INSTANCE.OnTickInGame();
+            MAtmos.OnTickInGame();
     }
 }

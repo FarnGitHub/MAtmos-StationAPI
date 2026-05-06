@@ -1,7 +1,7 @@
 package farn.matmos.option.modmenu.gui;
 
 import farn.matmos.option.MAtmosOption;
-import net.minecraft.MAtmos;
+import matmos.minecraft.MAtmos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import org.lwjgl.opengl.GL11;
@@ -44,7 +44,7 @@ public class MAtmosSliderWidget extends ButtonWidget {
             this.drawTexture(this.x + (int)(this.value * (float)(this.width - 8)), this.y, 0, 66, 4, 20);
             this.drawTexture(this.x + (int)(this.value * (float)(this.width - 8)) + 4, this.y, 196, 66, 4, 20);
         }
-        this.active = MAtmos.INSTANCE.isKnowledgeTurnedOn();
+        this.active = MAtmos.isKnowledgeTurnedOn() && (this.option != MAtmosOption.MUSIC_VOLUME || !MAtmos.soundManager.getMusicVolumeIsBasedOffMinecraft());
     }
 
     public boolean isMouseOver(Minecraft minecraft, int mouseX, int mouseY) {

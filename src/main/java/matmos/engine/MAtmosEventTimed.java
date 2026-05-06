@@ -5,6 +5,7 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.DTD;
 
+@SuppressWarnings("unused")
 public class MAtmosEventTimed extends MAtmosDescriptible {
 	MAtmosMachine machine;
 	public String event = "";

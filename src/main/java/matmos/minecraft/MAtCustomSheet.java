@@ -1,4 +1,4 @@
-package net.minecraft;
+package matmos.minecraft;
 
 import net.minecraft.util.math.Vec3d;
 

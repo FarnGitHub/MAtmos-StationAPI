@@ -1,6 +1,6 @@
 package farn.matmos;
 
-import net.minecraft.MAtmos;
+import matmos.minecraft.MAtmos;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.modificationstation.stationapi.api.event.init.InitFinishedEvent;
 
@@ -9,6 +9,6 @@ public class MatmosStationAPI {
 
     @EventListener
     public void initFinished(InitFinishedEvent event) {
-        MAtmos.INSTANCE.initialize();
+        MAtmos.initialize();
     }
 }

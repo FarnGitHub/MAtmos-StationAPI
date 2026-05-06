@@ -1,9 +1,9 @@
 package matmos.engine;
 
-import java.util.ArrayList;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class MAtmosCondition extends MAtmosSwitchable {
 	String sheet = "";
 	int key = 0;
@@ -35,24 +35,17 @@ public class MAtmosCondition extends MAtmosSwitchable {
 	}
 
 	public void setSymbol(String var1) {
-		this.conditionType = -1;
-		if(var1.equals("!=")) {
-			this.conditionType = 0;
-		} else if(var1.equals("==")) {
-			this.conditionType = 1;
-		} else if(var1.equals(">")) {
-			this.conditionType = 2;
-		} else if(var1.equals(">=")) {
-			this.conditionType = 3;
-		} else if(var1.equals("<")) {
-			this.conditionType = 4;
-		} else if(var1.equals("<=")) {
-			this.conditionType = 5;
-		} else if(var1.equals("in")) {
-			this.conditionType = 6;
-		} else if(var1.equals("!in")) {
-			this.conditionType = 7;
-		}
+		this.conditionType = switch (var1) {
+            case "!=" -> 0;
+            case "==" -> 1;
+            case ">" -> 2;
+            case ">=" -> 3;
+            case "<" -> 4;
+            case "<=" -> 5;
+            case "in" -> 6;
+            case "!in" -> 7;
+			default -> -1;
+        };
 
 		this.flagNeedsTesting();
 	}
@@ -101,7 +94,7 @@ public class MAtmosCondition extends MAtmosSwitchable {
 		} else {
 			boolean var1 = false;
 			if(!this.isDynamic()) {
-				if(this.knowledge.data.sheets.containsKey(this.sheet) && this.key >= 0 && this.key < ((ArrayList)this.knowledge.data.sheets.get(this.sheet)).size()) {
+				if(this.knowledge.data.sheets.containsKey(this.sheet) && this.key >= 0 && this.key < this.knowledge.data.sheets.get(this.sheet).size()) {
 					var1 = true;
 				}
 			} else if(this.knowledge.dynamics.containsKey(this.dynamicKey)) {
@@ -144,12 +137,12 @@ public class MAtmosCondition extends MAtmosSwitchable {
 		} else {
 			int var1;
 			if(!this.isDynamic()) {
-				var1 = ((Integer)((ArrayList)this.knowledge.data.sheets.get(this.sheet)).get(this.key)).intValue();
+				var1 = this.knowledge.data.sheets.get(this.sheet).get(this.key);
 			} else {
-				var1 = ((MAtmosDynamic)this.knowledge.dynamics.get(this.dynamicKey)).value;
+				var1 = this.knowledge.dynamics.get(this.dynamicKey).value;
 			}
 
-			return this.conditionType == 0 ? var1 != this.constant : (this.conditionType == 1 ? var1 == this.constant : (this.conditionType == 2 ? var1 > this.constant : (this.conditionType == 3 ? var1 >= this.constant : (this.conditionType == 4 ? var1 < this.constant : (this.conditionType == 5 ? var1 <= this.constant : (this.conditionType == 6 ? ((MAtmosList)this.knowledge.lists.get(this.list)).contains(var1) : (this.conditionType == 7 ? !((MAtmosList)this.knowledge.lists.get(this.list)).contains(var1) : false)))))));
+			return this.conditionType == 0 ? var1 != this.constant : (this.conditionType == 1 ? var1 == this.constant : (this.conditionType == 2 ? var1 > this.constant : (this.conditionType == 3 ? var1 >= this.constant : (this.conditionType == 4 ? var1 < this.constant : (this.conditionType == 5 ? var1 <= this.constant : (this.conditionType == 6 ? this.knowledge.lists.get(this.list).contains(var1) : (this.conditionType == 7 && ! this.knowledge.lists.get(this.list).contains(var1))))))));
 		}
 	}
 
@@ -184,7 +177,7 @@ public class MAtmosCondition extends MAtmosSwitchable {
 		}
 
 		this.createNode(var1, "constant", "" + this.constant);
-		this.createNode(var1, "list", "" + this.list);
+		this.createNode(var1, "list", this.list);
 		return "";
 	}
 

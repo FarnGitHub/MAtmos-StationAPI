@@ -1,7 +1,7 @@
 package farn.matmos.option.modmenu.gui;
 
 import farn.matmos.option.MAtmosOption;
-import net.minecraft.MAtmos;
+import matmos.minecraft.MAtmos;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
@@ -36,15 +36,12 @@ public class MAtmosScreen extends Screen {
     }
 
     protected void buttonClicked(ButtonWidget button) {
-        if(!button.active) return;
+        if(!button.active || !button.visible) return;
 
         if(button instanceof MAtmosButtonWidget boolButton) {
             boolButton.updateButton();
         } else if(button.id == 101) {
-            if(MAtmos.INSTANCE.isKnowledgeTurnedOn())
-                MAtmos.INSTANCE.knowledge.turnOff();
-            else
-                MAtmos.INSTANCE.knowledge.turnOn();
+            MAtmos.userToggle();
             button.text = matmosEnabledDisplayString();
         } else if(button.id == 100) {
             this.minecraft.setScreen(this.parent);
@@ -52,11 +49,11 @@ public class MAtmosScreen extends Screen {
     }
 
     public void removed() {
-        MAtmos.INSTANCE.saveOptions();
+        MAtmos.saveOptions();
         super.removed();
     }
 
     private String matmosEnabledDisplayString() {
-        return "MAtmos : " + (MAtmos.INSTANCE.isKnowledgeTurnedOn() ? "Enabled" : "Disabled");
+        return "MAtmos : " + (MAtmos.isKnowledgeTurnedOn() ? "Enabled" : "Disabled");
     }
 }

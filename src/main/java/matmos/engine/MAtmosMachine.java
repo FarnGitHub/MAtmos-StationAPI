@@ -5,11 +5,12 @@ import java.util.Iterator;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class MAtmosMachine extends MAtmosSwitchable {
-	ArrayList anyallows = new ArrayList();
-	ArrayList anyrestricts = new ArrayList();
-	ArrayList etimes = new ArrayList();
-	ArrayList streams = new ArrayList();
+	ArrayList<String> anyallows = new ArrayList<>();
+	ArrayList<String> anyrestricts = new ArrayList<>();
+	ArrayList<MAtmosEventTimed> etimes = new ArrayList<>();
+	ArrayList<MAtmosStream> streams = new ArrayList<>();
 	private boolean powered = false;
 	private boolean switchedOn = false;
 
@@ -18,22 +19,18 @@ public class MAtmosMachine extends MAtmosSwitchable {
 	}
 
 	public void routine() {
-		Iterator var1;
 		if(this.switchedOn) {
-			var1 = this.etimes.iterator();
 
-			while(var1.hasNext()) {
-				MAtmosEventTimed var2 = (MAtmosEventTimed)var1.next();
-				var2.routine();
-			}
+            for (MAtmosEventTimed var2 : this.etimes) {
+                var2.routine();
+            }
 		}
 
 		if(this.powered && !this.streams.isEmpty()) {
-			var1 = this.streams.iterator();
 
-			while(var1.hasNext()) {
-				((MAtmosStream)var1.next()).routine();
-			}
+            for (MAtmosStream stream : this.streams) {
+                stream.routine();
+            }
 		}
 
 	}
@@ -41,17 +38,14 @@ public class MAtmosMachine extends MAtmosSwitchable {
 	public void turnOn() {
 		if(this.powered && !this.switchedOn) {
 			this.switchedOn = true;
-			Iterator var1 = this.etimes.iterator();
 
-			while(var1.hasNext()) {
-				((MAtmosEventTimed)var1.next()).restart();
-			}
+            for (MAtmosEventTimed etime : this.etimes) {
+                etime.restart();
+            }
 
-			var1 = this.streams.iterator();
-
-			while(var1.hasNext()) {
-				((MAtmosStream)var1.next()).signalPlayable();
-			}
+            for (MAtmosStream stream : this.streams) {
+                stream.signalPlayable();
+            }
 		}
 
 	}
@@ -59,11 +53,10 @@ public class MAtmosMachine extends MAtmosSwitchable {
 	public void turnOff() {
 		if(this.powered && this.switchedOn) {
 			this.switchedOn = false;
-			Iterator var1 = this.streams.iterator();
 
-			while(var1.hasNext()) {
-				((MAtmosStream)var1.next()).signalStoppable();
-			}
+            for (MAtmosStream stream : this.streams) {
+                stream.signalStoppable();
+            }
 		}
 
 	}
@@ -73,11 +66,10 @@ public class MAtmosMachine extends MAtmosSwitchable {
 	}
 
 	public void powerOff() {
-		Iterator var1 = this.streams.iterator();
 
-		while(var1.hasNext()) {
-			((MAtmosStream)var1.next()).clearToken();
-		}
+        for (MAtmosStream stream : this.streams) {
+            stream.clearToken();
+        }
 
 		this.turnOff();
 		this.powered = false;
@@ -91,11 +83,11 @@ public class MAtmosMachine extends MAtmosSwitchable {
 		return this.switchedOn;
 	}
 
-	public ArrayList getAllows() {
+	public ArrayList<String> getAllows() {
 		return this.anyallows;
 	}
 
-	public ArrayList getRestricts() {
+	public ArrayList<String> getRestricts() {
 		return this.anyrestricts;
 	}
 
@@ -129,7 +121,7 @@ public class MAtmosMachine extends MAtmosSwitchable {
 		this.flagNeedsTesting();
 	}
 
-	public ArrayList getEventsTimed() {
+	public ArrayList<MAtmosEventTimed> getEventsTimed() {
 		return this.etimes;
 	}
 
@@ -144,10 +136,10 @@ public class MAtmosMachine extends MAtmosSwitchable {
 	}
 
 	public MAtmosEventTimed getEventTimed(int var1) {
-		return (MAtmosEventTimed)this.etimes.get(var1);
+		return this.etimes.get(var1);
 	}
 
-	public ArrayList getStreams() {
+	public ArrayList<MAtmosStream> getStreams() {
 		return this.streams;
 	}
 
@@ -162,30 +154,25 @@ public class MAtmosMachine extends MAtmosSwitchable {
 	}
 
 	public MAtmosStream getStream(int var1) {
-		return (MAtmosStream)this.streams.get(var1);
+		return this.streams.get(var1);
 	}
 
 	protected boolean testIfValid() {
-		if(this.anyallows.size() == 0) {
+		if(this.anyallows.isEmpty()) {
 			return false;
 		} else {
-			Iterator var1 = this.anyallows.iterator();
 
-			while(var1.hasNext()) {
-				String var2 = (String)var1.next();
-				if(!this.knowledge.csets.containsKey(var2)) {
-					return false;
-				}
-			}
+            for (String var2 : this.anyallows) {
+                if (!this.knowledge.csets.containsKey(var2)) {
+                    return false;
+                }
+            }
 
-			Iterator var3 = this.anyrestricts.iterator();
-
-			while(var3.hasNext()) {
-				String var4 = (String)var3.next();
-				if(!this.knowledge.csets.containsKey(var4)) {
-					return false;
-				}
-			}
+            for (String var4 : this.anyrestricts) {
+                if (!this.knowledge.csets.containsKey(var4)) {
+                    return false;
+                }
+            }
 
 			return true;
 		}
@@ -226,20 +213,20 @@ public class MAtmosMachine extends MAtmosSwitchable {
 			return false;
 		} else {
 			boolean var1 = false;
-			Iterator var2 = this.anyallows.iterator();
+			Iterator<String> var2 = this.anyallows.iterator();
 
 			while(!var1 && var2.hasNext()) {
-				String var3 = (String)var2.next();
-				if(((MAtmosConditionSet)this.knowledge.csets.get(var3)).isTrue()) {
+				String var3 = var2.next();
+				if(this.knowledge.csets.get(var3).isTrue()) {
 					var1 = true;
 				}
 			}
 
-			Iterator var5 = this.anyrestricts.iterator();
+			Iterator<String> var5 = this.anyrestricts.iterator();
 
 			while(var1 && var5.hasNext()) {
-				String var4 = (String)var5.next();
-				if(((MAtmosConditionSet)this.knowledge.csets.get(var4)).isTrue()) {
+				String var4 = var5.next();
+				if(this.knowledge.csets.get(var4).isTrue()) {
 					var1 = false;
 				}
 			}
@@ -250,29 +237,22 @@ public class MAtmosMachine extends MAtmosSwitchable {
 
 	public String serialize(XMLEventWriter var1) throws XMLStreamException {
 		this.buildDescriptibleSerialized(var1);
-		Iterator var2 = this.anyallows.iterator();
 
-		while(var2.hasNext()) {
-			this.createNode(var1, "allow", (String)var2.next());
-		}
+        for (String anyallow : this.anyallows) {
+            this.createNode(var1, "allow", anyallow);
+        }
 
-		var2 = this.anyrestricts.iterator();
+        for (String anyrestrict : this.anyrestricts) {
+            this.createNode(var1, "restrict", anyrestrict);
+        }
 
-		while(var2.hasNext()) {
-			this.createNode(var1, "restrict", (String)var2.next());
-		}
+        for (MAtmosEventTimed etime : this.etimes) {
+            etime.serialize(var1);
+        }
 
-		var2 = this.etimes.iterator();
-
-		while(var2.hasNext()) {
-			((MAtmosEventTimed)var2.next()).serialize(var1);
-		}
-
-		var2 = this.streams.iterator();
-
-		while(var2.hasNext()) {
-			((MAtmosStream)var2.next()).serialize(var1);
-		}
+        for (MAtmosStream stream : this.streams) {
+            stream.serialize(var1);
+        }
 
 		return "";
 	}

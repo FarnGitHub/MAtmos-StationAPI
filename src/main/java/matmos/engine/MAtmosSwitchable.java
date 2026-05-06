@@ -1,5 +1,6 @@
 package matmos.engine;
 
+@SuppressWarnings("unused")
 public abstract class MAtmosSwitchable extends MAtmosDescriptible {
 	MAtmosKnowledge knowledge;
 	boolean needsTesting;

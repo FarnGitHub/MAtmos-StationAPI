@@ -6,8 +6,9 @@ import java.util.Map.Entry;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class MAtmosConditionSet extends MAtmosSwitchable {
-	HashMap conditions = new HashMap();
+	HashMap<String, Boolean> conditions = new HashMap<>();
 	private boolean isTrueEvaluated = false;
 
 	MAtmosConditionSet(MAtmosKnowledge var1) {
@@ -15,17 +16,15 @@ public class MAtmosConditionSet extends MAtmosSwitchable {
 	}
 
 	protected boolean testIfValid() {
-		if(this.conditions.size() == 0) {
+		if(this.conditions.isEmpty()) {
 			return false;
 		} else {
-			Iterator var1 = this.conditions.keySet().iterator();
 
-			while(var1.hasNext()) {
-				String var2 = (String)var1.next();
-				if(!this.knowledge.conditions.containsKey(var2)) {
-					return false;
-				}
-			}
+            for (String var2 : this.conditions.keySet()) {
+                if (!this.knowledge.conditions.containsKey(var2)) {
+                    return false;
+                }
+            }
 
 			return true;
 		}
@@ -57,7 +56,7 @@ public class MAtmosConditionSet extends MAtmosSwitchable {
 
 	public void addCondition(String var1, boolean var2) throws IllegalArgumentException {
 		this.flagNeedsTesting();
-		this.conditions.put(var1, Boolean.valueOf(var2));
+		this.conditions.put(var1, var2);
 	}
 
 	public void removeCondition(String var1) {
@@ -65,7 +64,7 @@ public class MAtmosConditionSet extends MAtmosSwitchable {
 		this.conditions.remove(var1);
 	}
 
-	public HashMap getSet() {
+	public HashMap<String, Boolean> getSet() {
 		return this.conditions;
 	}
 
@@ -96,11 +95,11 @@ public class MAtmosConditionSet extends MAtmosSwitchable {
 			return false;
 		} else {
 			boolean var1 = true;
-			Iterator var2 = this.conditions.entrySet().iterator();
+			Iterator<Entry<String, Boolean>> var2 = this.conditions.entrySet().iterator();
 
 			while(var1 && var2.hasNext()) {
-				Entry var3 = (Entry)var2.next();
-				if(((Boolean)var3.getValue()).booleanValue() != ((MAtmosCondition)this.knowledge.conditions.get(var3.getKey())).isTrue()) {
+				Entry<String, Boolean> var3 = var2.next();
+				if(var3.getValue() != ((MAtmosCondition)this.knowledge.conditions.get(var3.getKey())).isTrue()) {
 					var1 = false;
 				}
 			}
@@ -111,16 +110,14 @@ public class MAtmosConditionSet extends MAtmosSwitchable {
 
 	public String serialize(XMLEventWriter var1) throws XMLStreamException {
 		this.buildDescriptibleSerialized(var1);
-		Iterator var2 = this.conditions.entrySet().iterator();
 
-		while(var2.hasNext()) {
-			Entry var3 = (Entry)var2.next();
-			if(((Boolean)var3.getValue()).booleanValue()) {
-				this.createNode(var1, "truepart", (String)var3.getKey());
-			} else {
-				this.createNode(var1, "falsepart", (String)var3.getKey());
-			}
-		}
+        for (Entry<String, Boolean> entry : this.conditions.entrySet()) {
+            if (entry.getValue()) {
+                this.createNode(var1, "truepart", entry.getKey());
+            } else {
+                this.createNode(var1, "falsepart", entry.getKey());
+            }
+        }
 
 		return "";
 	}

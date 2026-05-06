@@ -1,4 +1,4 @@
-package net.minecraft;
+package matmos.minecraft;
 
 import java.util.HashMap;
 import matmos.engine.MAtmosSoundManager;
@@ -10,8 +10,6 @@ public abstract class MAtSoundManagerBase implements MAtmosSoundManager {
 	HashMap<Integer, MAtCustomSheet> locators = new HashMap<>();
 
 	public abstract void initialize();
-
-	public abstract void playSoundEffect(String key, float volume, float pitch);
 
 	public void setCustomSoundVolume(float vol) {
 		this.soundVolume = vol;

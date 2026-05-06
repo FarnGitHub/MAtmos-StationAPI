@@ -7,19 +7,19 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 
 public class MAtmosList extends MAtmosDescriptible {
-	ArrayList list = new ArrayList();
+	ArrayList<Integer> list = new ArrayList<>();
 
-	public ArrayList getList() {
+	public ArrayList<Integer> getList() {
 		return this.list;
 	}
 
 	public boolean contains(int var1) {
-		return this.list.contains(Integer.valueOf(var1));
+		return this.list.contains(var1);
 	}
 
 	public void add(int var1) {
-		if(!this.list.contains(Integer.valueOf(var1))) {
-			this.list.add(Integer.valueOf(var1));
+		if(!this.list.contains(var1)) {
+			this.list.add(var1);
 			Collections.sort(this.list);
 		}
 
@@ -35,11 +35,10 @@ public class MAtmosList extends MAtmosDescriptible {
 
 	public String serialize(XMLEventWriter var1) throws XMLStreamException {
 		this.buildDescriptibleSerialized(var1);
-		Iterator var2 = this.list.iterator();
 
-		while(var2.hasNext()) {
-			this.createNode(var1, "constant", ((Integer)var2.next()).toString());
-		}
+        for (Integer integer : this.list) {
+            this.createNode(var1, "constant", integer.toString());
+        }
 
 		return null;
 	}

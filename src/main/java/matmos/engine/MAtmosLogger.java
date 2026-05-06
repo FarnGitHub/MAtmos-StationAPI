@@ -1,11 +1,11 @@
 package matmos.engine;
 
-import net.minecraft.MAtmos;
+import matmos.minecraft.MAtmos;
 
 public class MAtmosLogger {
 
 	public static void notice(String var0) {
-		if(MAtmos.INSTANCE.showMAtmosLogger)
+		if(MAtmos.showMAtmosLogger)
 			System.out.println(var0);
 	}
 }

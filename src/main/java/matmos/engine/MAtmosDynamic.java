@@ -7,9 +7,10 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.DTD;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class MAtmosDynamic extends MAtmosSwitchable {
-	public ArrayList sheets = new ArrayList();
-	public ArrayList keys = new ArrayList();
+	public ArrayList<String> sheets = new ArrayList<>();
+	public ArrayList<Integer> keys = new ArrayList<>();
 	public int value = 0;
 
 	MAtmosDynamic(MAtmosKnowledge var1) {
@@ -18,7 +19,7 @@ public class MAtmosDynamic extends MAtmosSwitchable {
 
 	public void addCouple(String var1, int var2) {
 		this.sheets.add(var1);
-		this.keys.add(Integer.valueOf(var2));
+		this.keys.add(var2);
 		this.flagNeedsTesting();
 	}
 
@@ -34,24 +35,24 @@ public class MAtmosDynamic extends MAtmosSwitchable {
 	}
 
 	public void setKey(int var1, int var2) {
-		this.keys.set(var1, Integer.valueOf(var2));
+		this.keys.set(var1, var2);
 		this.flagNeedsTesting();
 	}
 
-	public ArrayList getSheets() {
+	public ArrayList<String> getSheets() {
 		return this.sheets;
 	}
 
-	public ArrayList getKeys() {
+	public ArrayList<Integer> getKeys() {
 		return this.keys;
 	}
 
 	public String getSheet(int var1) {
-		return (String)this.sheets.get(var1);
+		return this.sheets.get(var1);
 	}
 
 	public int getKey(int var1) {
-		return ((Integer)this.keys.get(var1)).intValue();
+		return this.keys.get(var1);
 	}
 
 	public boolean isActive() {
@@ -61,35 +62,35 @@ public class MAtmosDynamic extends MAtmosSwitchable {
 	public void evaluate() {
 		this.value = 0;
 		if(this.isValid()) {
-			Iterator var1 = this.sheets.iterator();
+			Iterator<String> itSheet = this.sheets.iterator();
 
-			String var2;
-			Integer var3;
-			for(Iterator var4 = this.keys.iterator(); var1.hasNext(); this.value += ((Integer)((ArrayList)this.knowledge.data.sheets.get(var2)).get(var3.intValue())).intValue()) {
-				var2 = (String)var1.next();
-				var3 = (Integer)var4.next();
+			String sheet;
+			Integer key;
+			for(Iterator<Integer> itKey = this.keys.iterator(); itSheet.hasNext(); this.value += (this.knowledge.data.sheets.get(sheet).get(key))) {
+				sheet = itSheet.next();
+				key = itKey.next();
 			}
 		}
 
 	}
 
 	protected boolean testIfValid() {
-		Iterator var1 = this.sheets.iterator();
-		Iterator var2 = this.keys.iterator();
+		Iterator<String> itSheet = this.sheets.iterator();
+		Iterator<Integer> itString = this.keys.iterator();
 
-		String var3;
-		Integer var4;
+		String sheet;
+		Integer key;
 		do {
-			if(!var1.hasNext()) {
+			if(!itSheet.hasNext()) {
 				return true;
 			}
 
-			var3 = (String)var1.next();
-			var4 = (Integer)var2.next();
-			if(!this.knowledge.data.sheets.containsKey(var3)) {
+			sheet = itSheet.next();
+			key = itString.next();
+			if(!this.knowledge.data.sheets.containsKey(sheet)) {
 				return false;
 			}
-		} while(var4.intValue() >= 0 && var4.intValue() < ((ArrayList)this.knowledge.data.sheets.get(var3)).size());
+		} while(key >= 0 && key < this.knowledge.data.sheets.get(sheet).size());
 
 		return false;
 	}

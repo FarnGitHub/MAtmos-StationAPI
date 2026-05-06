@@ -1,7 +1,7 @@
 package farn.matmos.option.modmenu.gui;
 
 import farn.matmos.option.MAtmosOption;
-import net.minecraft.MAtmos;
+import matmos.minecraft.MAtmos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.OptionButtonWidget;
 
@@ -19,7 +19,7 @@ public class MAtmosButtonWidget extends OptionButtonWidget {
     }
 
     protected void renderBackground(Minecraft minecraft, int mouseX, int mouseY) {
+        this.active = MAtmos.isKnowledgeTurnedOn();
         super.renderBackground(minecraft, mouseX, mouseY);
-        this.active = MAtmos.INSTANCE.isKnowledgeTurnedOn();
     }
 }

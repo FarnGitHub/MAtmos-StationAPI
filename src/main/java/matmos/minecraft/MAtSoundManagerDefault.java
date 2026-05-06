@@ -1,4 +1,4 @@
-package net.minecraft;
+package matmos.minecraft;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,61 +31,54 @@ public class MAtSoundManagerDefault extends MAtSoundManagerBase {
 
 	}
 
-	public void cacheSound(String var1) {
-		this.getSound(var1);
+	public void cacheSound(String filePath) {
+		this.getSound(filePath);
 	}
 
-	String getSound(String var1) {
-		if(this.soundequivalences.containsKey(var1)) {
-			return this.soundequivalences.get(var1);
+	public String getSound(String filePath) {
+		if(this.soundequivalences.containsKey(filePath)) {
+			return this.soundequivalences.get(filePath);
 		} else {
-			int var6 = var1.indexOf("/");
-			int var7 = var1.indexOf(".");
-			String var8 = var1.substring(var6 + 1, var7);
-			String var9 = var8.replaceAll("/", ".");
-			var9 = var9.replaceAll("0", "");
-			var9 = var9.replaceAll("1", "");
-			var9 = var9.replaceAll("2", "");
-			var9 = var9.replaceAll("3", "");
-			var9 = var9.replaceAll("4", "");
-			var9 = var9.replaceAll("5", "");
-			var9 = var9.replaceAll("6", "");
-			var9 = var9.replaceAll("7", "");
-			var9 = var9.replaceAll("8", "");
-			var9 = var9.replaceAll("9", "");
-			var9 = "matmos:" + var9;
-			this.soundequivalences.put(var1, var9);
-			return var9;
+			int firstSlash = filePath.indexOf("/");
+			int fileFormat = filePath.indexOf(".");
+			String preSoundPath = filePath.substring(firstSlash + 1, fileFormat);
+			String soundId = preSoundPath.replace("/", ".");
+			soundId = "matmos:" + soundId;
+			for(int number = 0; number < 10; ++number) {
+				soundId = soundId.replace(String.valueOf(number), "");
+			}
+			this.soundequivalences.put(filePath, soundId);
+			return soundId;
 		}
 	}
 
 
-	public void playSound(String var1, float var2, float var3, int var4) {
-		float var5 = (float)this.mc.player.x;
-		float var6 = (float)this.mc.player.y;
-		float var7 = (float)this.mc.player.z;
-		String var8 = this.getSound(var1);
-		float var9 = var2 == 0.0F ? (this.musicVolUsesMinecraft ? this.settingsMusicVolume : this.getCustomMusicVolume()) : var2 * this.getCustomSoundVolume();
-		if(var9 != 0.0F) {
-			if(var4 > 0) {
-				double var10 = (double)(this.random.nextFloat() * 2.0F) * Math.PI;
-				var5 += (float)(Math.cos(var10) * (double)var4);
-				var6 = var6 + this.random.nextFloat() * (float)var4 * 0.2F - (float)var4 * 0.01F;
-				var7 += (float)(Math.sin(var10) * (double)var4);
-				this.playSoundFXProxy(var8, var5, var6, var7, var9, var3, 0, 0.0F);
-			} else if(var4 < 0) {
-				MAtCustomSheet var12 = this.locators.get(-var4);
-				if(var12 != null) {
-					Vec3d var11 = var12.provideLocation(-var4);
-					if(var11 != null) {
-						this.playSoundFXProxy(var8, var5, var6, var7, var9, var3, 0, 0.0F);
+	public void playSound(String soundPath, float vol, float pitch, int meta) {
+		float x = (float)this.mc.player.x;
+		float y = (float)this.mc.player.y;
+		float z = (float)this.mc.player.z;
+		String soundId = this.getSound(soundPath);
+		float volume = vol == 0.0F ? (this.musicVolUsesMinecraft ? this.settingsMusicVolume : this.getCustomMusicVolume()) : vol * this.getCustomSoundVolume();
+		if(volume != 0.0F) {
+			if(meta > 0) {
+				double randEffect = (double)(this.random.nextFloat() * 2.0F) * Math.PI;
+				x += (float)(Math.cos(randEffect) * (double)meta);
+				y = y + this.random.nextFloat() * (float)meta * 0.2F - (float)meta * 0.01F;
+				z += (float)(Math.sin(randEffect) * (double)meta);
+				this.playSoundFXProxy(soundId, x, y, z, volume, pitch, 0, 0.0F);
+			} else if(meta < 0) {
+				MAtCustomSheet sheet = this.locators.get(-meta);
+				if(sheet != null) {
+					Vec3d location = sheet.provideLocation(-meta);
+					if(location != null) {
+						this.playSoundFXProxy(soundId, x, y, z, volume, pitch, 0, 0.0F);
 					}
 				} else {
-					System.out.println("(MAtmos) Error, Couldn't find locator:" + -var4);
+					System.out.println("(MAtmos) Error, Couldn't find locator:" + -meta);
 				}
 			} else {
-				var6 += 2048.0F;
-				this.playSoundFXProxy(var8, var5, var6, var7, var9, var3, 0, 0.0F);
+				y += 2048.0F;
+				this.playSoundFXProxy(soundId, x, y, z, volume, pitch, 0, 0.0F);
 			}
 		}
 
@@ -96,18 +89,18 @@ public class MAtSoundManagerDefault extends MAtSoundManagerBase {
 			Sound var9 = Minecraft.INSTANCE.soundManager.sounds.get(id);
 			if(var9 != null) {
 				this.soundProxyInteger = (this.soundProxyInteger + 1) % 128;
-				String var10 = "MATMOS_SPX_" + this.soundProxyInteger;
-				getSoundSystem().removeSource(var10);
-				getSoundSystem().newSource(false, var10, var9.soundFile, var9.id, false, x, y, z, var7, var8);
+				String soundId = "MATMOS_SPX_" + this.soundProxyInteger;
+				getSoundSystem().removeSource(soundId);
+				getSoundSystem().newSource(false, soundId, var9.soundFile, var9.id, false, x, y, z, var7, var8);
 				if(volume > 1.0F) {
 					volume = 1.0F;
 				}
 
 				volume *= 0.25F;
-				getSoundSystem().setTemporary(var10, true);
-				getSoundSystem().setPitch(var10, pitch);
-				getSoundSystem().setVolume(var10, volume * this.settingsVolume);
-				getSoundSystem().play(var10);
+				getSoundSystem().setTemporary(soundId, true);
+				getSoundSystem().setPitch(soundId, pitch);
+				getSoundSystem().setVolume(soundId, volume * this.settingsVolume);
+				getSoundSystem().play(soundId);
 			}
 		}
 	}
@@ -117,23 +110,22 @@ public class MAtSoundManagerDefault extends MAtSoundManagerBase {
 	}
 
 	public void updateSettingsVolume() {
-		boolean var1 = this.settingsVolume != this.mc.options.soundVolume;
-		if(var1) {
+		boolean volumeChanged = this.settingsVolume != this.mc.options.soundVolume;
+		if(volumeChanged) {
 			this.settingsVolume = this.mc.options.soundVolume;
 		}
 
 		if(this.musicVolUsesMinecraft) {
-			float var2 = this.mc.options.musicVolume;
-			if(var1 || var2 != this.settingsMusicVolume) {
-
-                for (String s : this.sourcesAsMusic) {
-					getSoundSystem().setVolume(s, var2 * this.settingsVolume);
+			float musicVol = this.mc.options.musicVolume;
+			if(volumeChanged || musicVol != this.settingsMusicVolume) {
+                for (String sound : this.sourcesAsMusic) {
+					getSoundSystem().setVolume(sound, musicVol * this.settingsVolume);
                 }
 			}
 
-			this.settingsMusicVolume = var2;
+			this.settingsMusicVolume = musicVol;
 		} else {
-			if(var1 || this.getCustomMusicVolume() != this.previousMusicVolume) {
+			if(volumeChanged || this.getCustomMusicVolume() != this.previousMusicVolume) {
 
                 for (String s : this.sourcesAsMusic) {
 					getSoundSystem().setVolume(s, this.getCustomMusicVolume() * this.settingsVolume);
@@ -247,10 +239,4 @@ public class MAtSoundManagerDefault extends MAtSoundManagerBase {
 		this.sourcesAsMusic.remove(var2);
 	}
 
-	public void playSoundEffect(String id, float volume, float pitch) {
-		float x = (float)this.mc.player.x;
-		float y = (float)this.mc.player.y + 2048.0F;
-		float z = (float)this.mc.player.z;
-		this.playSoundFXProxy(id, x, y, z, volume, pitch, 0, 0.0F);
-	}
 }

@@ -15,7 +15,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class MAtmosUtilityLoader {
 	MAtmosKnowledge knowledgeWorkstation;
 	static final String NAME = "name";
@@ -68,7 +68,8 @@ public class MAtmosUtilityLoader {
 		return true;
 	}
 
-	public static boolean loadKnowledgeStream(MAtmosKnowledge var0, InputStream var1, boolean var2) throws MAtmosException {
+	@SuppressWarnings("CallToPrintStackTrace")
+    public static boolean loadKnowledgeStream(MAtmosKnowledge var0, InputStream var1, boolean var2) throws MAtmosException {
 		try {
 			parseXML(var0, var1, var2);
 			var1.close();
@@ -134,10 +135,10 @@ public class MAtmosUtilityLoader {
 
 	private static String parxeXMLextractNameAttribute(StartElement var0) {
 		String var1 = null;
-		Iterator var2 = var0.getAttributes();
+		Iterator<Attribute> var2 = var0.getAttributes();
 
 		while(var2.hasNext() && var1 == null) {
-			Attribute var3 = (Attribute)var2.next();
+			Attribute var3 = var2.next();
 			if(var3.getName().toString().equals("name")) {
 				var1 = var3.getValue();
 			}
@@ -195,7 +196,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn\'t add Dynamic : " + var2);
+			System.err.println("Couldn't add Dynamic : " + var2);
 		}
 
 		MAtmosDynamic var5 = var0.getDynamic(var2);
@@ -212,10 +213,10 @@ public class MAtmosUtilityLoader {
 				if(Objects.equals(var8, "descriptible")) {
 					parseXMLdescriptible(var0, var1, var5);
 				} else if(Objects.equals(var8, "entry")) {
-					Iterator var9 = var7.getAttributes();
+					Iterator<Attribute> var9 = var7.getAttributes();
 
 					while(var9.hasNext()) {
-						Attribute var10 = (Attribute)var9.next();
+						Attribute var10 = var9.next();
 						if(var10.getName().toString().equals("sheet")) {
 							var5.addCouple(var10.getValue(), Integer.parseInt(var1.nextEvent().asCharacters().toString()));
 						}
@@ -245,7 +246,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn\'t add List : " + var2);
+			System.err.println("Couldn't add List : " + var2);
 		}
 
 		MAtmosList var5 = var0.getList(var2);
@@ -294,7 +295,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn\'t add Condition : " + var2);
+			System.err.println("Couldn't add Condition : " + var2);
 		}
 
 		MAtmosCondition var5 = var0.getDataCondition(var2);
@@ -353,7 +354,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn\'t add Set : " + var2);
+			System.err.println("Couldn't add Set : " + var2);
 		}
 
 		MAtmosConditionSet var5 = var0.getConditionSet(var2);
@@ -398,7 +399,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn\'t add Event : " + var2);
+			System.err.println("Couldn't add Event : " + var2);
 		}
 
 		MAtmosEvent var5 = var0.getEvent(var2);
@@ -451,7 +452,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn\'t add Machine : " + var2);
+			System.err.println("Couldn't add Machine : " + var2);
 		}
 
 		MAtmosMachine var5 = var0.getMachine(var2);

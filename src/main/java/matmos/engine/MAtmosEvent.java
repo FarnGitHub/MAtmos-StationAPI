@@ -1,13 +1,12 @@
 package matmos.engine;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 
 public class MAtmosEvent extends MAtmosDescriptible {
 	MAtmosKnowledge knowledge;
-	public ArrayList paths = new ArrayList();
+	public ArrayList<String> paths = new ArrayList<>();
 	public float volMin;
 	public float volMax;
 	public float pitchMin;
@@ -28,11 +27,10 @@ public class MAtmosEvent extends MAtmosDescriptible {
 	}
 
 	public void cacheSounds() {
-		Iterator var1 = this.paths.iterator();
 
-		while(var1.hasNext()) {
-			this.knowledge.soundManager.cacheSound((String)var1.next());
-		}
+        for (String path : this.paths) {
+            this.knowledge.soundManager.cacheSound(path);
+        }
 
 	}
 
@@ -42,7 +40,7 @@ public class MAtmosEvent extends MAtmosDescriptible {
 			float var4 = this.pitchMax - this.pitchMin;
 			var3 = this.volMin + (var3 > 0.0F ? this.knowledge.random.nextFloat() * var3 : 0.0F);
 			var4 = this.pitchMin + (var4 > 0.0F ? this.knowledge.random.nextFloat() * var4 : 0.0F);
-			String var5 = (String)this.paths.get(this.knowledge.random.nextInt(this.paths.size()));
+			String var5 = this.paths.get(this.knowledge.random.nextInt(this.paths.size()));
 			var3 *= var1;
 			var4 *= var2;
 			this.knowledge.soundManager.playSound(var5, var3, var4, this.metaSound);
@@ -52,11 +50,10 @@ public class MAtmosEvent extends MAtmosDescriptible {
 
 	public String serialize(XMLEventWriter var1) throws XMLStreamException {
 		this.buildDescriptibleSerialized(var1);
-		Iterator var2 = this.paths.iterator();
 
-		while(var2.hasNext()) {
-			this.createNode(var1, "path", (String)var2.next());
-		}
+        for (String path : this.paths) {
+            this.createNode(var1, "path", path);
+        }
 
 		this.createNode(var1, "volmin", this.volMin + "");
 		this.createNode(var1, "volmax", this.volMax + "");
