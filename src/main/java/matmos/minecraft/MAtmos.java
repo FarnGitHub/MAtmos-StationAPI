@@ -42,6 +42,10 @@ public class MAtmos {
 	private static final File optionsFile = new File(Minecraft.getRunDirectory(), "matmos_options.txt");
 	private static final File expansionFolder = new File(Minecraft.getRunDirectory(), "matmos_expansions/");
 
+	private MAtmos() {
+		throw new AssertionError("no matmos.minecraft.MAtmos instances for you!");
+	}
+
     public static void initialize() {
 		findSheetClasses();
 		initializeKnowledge();

@@ -2,10 +2,10 @@ package matmos.engine;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 
+@SuppressWarnings("unused")
 public class MAtmosList extends MAtmosDescriptible {
 	ArrayList<Integer> list = new ArrayList<>();
 
