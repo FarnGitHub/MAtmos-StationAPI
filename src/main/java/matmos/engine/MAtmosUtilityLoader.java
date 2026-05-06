@@ -1,5 +1,7 @@
 package matmos.engine;
 
+import farn.matmos.MatmosStationAPI;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -196,7 +198,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn't add Dynamic : " + var2);
+            MatmosStationAPI.LOGGER.error("Couldn't add Dynamic : {}", var2);
 		}
 
 		MAtmosDynamic var5 = var0.getDynamic(var2);
@@ -246,7 +248,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn't add List : " + var2);
+            MatmosStationAPI.LOGGER.error("Couldn't add List : {}", var2);
 		}
 
 		MAtmosList var5 = var0.getList(var2);
@@ -295,7 +297,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn't add Condition : " + var2);
+            MatmosStationAPI.LOGGER.error("Couldn't add Condition : {}", var2);
 		}
 
 		MAtmosCondition var5 = var0.getDataCondition(var2);
@@ -354,7 +356,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn't add Set : " + var2);
+            MatmosStationAPI.LOGGER.error("Couldn't add Set : {}", var2);
 		}
 
 		MAtmosConditionSet var5 = var0.getConditionSet(var2);
@@ -399,7 +401,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn't add Event : " + var2);
+            MatmosStationAPI.LOGGER.error("Couldn't add Event : {}", var2);
 		}
 
 		MAtmosEvent var5 = var0.getEvent(var2);
@@ -452,7 +454,7 @@ public class MAtmosUtilityLoader {
 		}
 
 		if(!var4 && !var3) {
-			System.err.println("Couldn't add Machine : " + var2);
+            MatmosStationAPI.LOGGER.error("Couldn't add Machine : {}", var2);
 		}
 
 		MAtmosMachine var5 = var0.getMachine(var2);

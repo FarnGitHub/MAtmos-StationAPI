@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
+
+import farn.matmos.MatmosStationAPI;
 import matmos.engine.MAtmosException;
 import matmos.engine.MAtmosKnowledge;
 import matmos.engine.MAtmosUtilityLoader;
@@ -49,12 +51,15 @@ public class MAtmos {
 	}
 
 	public static void OnTickInGame() {
-		if(mc.options.soundVolume != 0.0F || mc.options.musicVolume != 0.0F) {
-			if(mc.world.getProperties().getTime() != lastWorldTime) {
-				tickThink();
-				lastWorldTime = mc.world.getProperties().getTime();
-			}
+		if(canTick()) {
+			tickThink();
+			lastWorldTime = mc.world.getProperties().getTime();
 		}
+	}
+
+	private static boolean canTick() {
+		return (mc.options.soundVolume != 0.0F || mc.options.musicVolume != 0.0F) &&
+				mc.world.getProperties().getTime() != lastWorldTime;
 	}
 
 	private static void initSheetClasses() {
@@ -88,12 +93,16 @@ public class MAtmos {
 		if(mc.player != null) {
 			mc.player.sendMessage("(MAtmos) " + var1);
 		}
-
 		printMessageSilent(var1);
 	}
 
 	public static void printMessageSilent(String var1) {
-		System.out.println("(MAtmos) " + var1);
+		MatmosStationAPI.LOGGER.info(var1);
+	}
+
+	public static void notice(String str) {
+		if(MAtmos.showMAtmosLogger)
+			MatmosStationAPI.LOGGER.info(str);
 	}
 
 	private static void initializeKnowledge() {
@@ -361,7 +370,7 @@ public class MAtmos {
 						showMAtmosLogger = optionToBool(lines[1]);
 					}
 				} catch (Exception var4) {
-					System.out.println("Skipping bad option: " + line);
+                    MatmosStationAPI.LOGGER.error("Skipping bad option: {}", line);
 				}
 			}
 			reader.close();

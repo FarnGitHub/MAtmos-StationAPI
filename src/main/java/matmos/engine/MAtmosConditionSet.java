@@ -1,5 +1,7 @@
 package matmos.engine;
 
+import matmos.minecraft.MAtmos;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -75,7 +77,7 @@ public class MAtmosConditionSet extends MAtmosSwitchable {
 			boolean var1 = this.isTrueEvaluated;
 			this.isTrueEvaluated = this.testIfTrue();
 			if(var1 != this.isTrueEvaluated) {
-				MAtmosLogger.notice("(MAtmos) S:" + this.nickname + (this.isTrueEvaluated ? " now On." : " now Off."));
+				MAtmos.notice("(S): " + this.nickname + (this.isTrueEvaluated ? " now On." : " now Off."));
 			}
 
 			return this.isTrueEvaluated;
@@ -99,7 +101,7 @@ public class MAtmosConditionSet extends MAtmosSwitchable {
 
 			while(var1 && var2.hasNext()) {
 				Entry<String, Boolean> var3 = var2.next();
-				if(var3.getValue() != ((MAtmosCondition)this.knowledge.conditions.get(var3.getKey())).isTrue()) {
+				if(var3.getValue() != this.knowledge.conditions.get(var3.getKey()).isTrue()) {
 					var1 = false;
 				}
 			}

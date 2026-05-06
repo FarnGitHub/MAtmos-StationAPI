@@ -1,5 +1,7 @@
 package matmos.engine;
 
+import matmos.minecraft.MAtmos;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.xml.stream.XMLEventWriter;
@@ -193,7 +195,7 @@ public class MAtmosMachine extends MAtmosSwitchable {
 					this.turnOff();
 				}
 
-				MAtmosLogger.notice("(MAtmos) M:" + this.nickname + (this.switchedOn ? " now On." : " now Off."));
+				MAtmos.notice("(MA): " + this.nickname + (this.switchedOn ? " now On." : " now Off."));
 			}
 
 			return this.switchedOn;

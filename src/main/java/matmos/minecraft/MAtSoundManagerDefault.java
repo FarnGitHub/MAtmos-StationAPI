@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Map.Entry;
+
+import farn.matmos.MatmosStationAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sound.Sound;
 import net.minecraft.client.sound.SoundManager;
@@ -74,7 +76,7 @@ public class MAtSoundManagerDefault extends MAtSoundManagerBase {
 						this.playSoundFXProxy(soundId, x, y, z, volume, pitch, 0, 0.0F);
 					}
 				} else {
-					System.out.println("(MAtmos) Error, Couldn't find locator:" + -meta);
+                    MatmosStationAPI.LOGGER.error("Couldn't find locator:{}", -meta);
 				}
 			} else {
 				y += 2048.0F;
@@ -184,7 +186,7 @@ public class MAtSoundManagerDefault extends MAtSoundManagerBase {
 			getSoundSystem().setPitch(var5, var4);
 			getSoundSystem().setLooping(var5, true);
 		} else {
-			System.out.println("No sound found for " + var2);
+            MatmosStationAPI.LOGGER.error("No sound found for {}", var2);
 		}
 
 	}

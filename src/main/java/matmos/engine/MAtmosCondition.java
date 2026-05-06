@@ -1,5 +1,7 @@
 package matmos.engine;
 
+import matmos.minecraft.MAtmos;
+
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 
@@ -116,7 +118,7 @@ public class MAtmosCondition extends MAtmosSwitchable {
 			boolean var1 = this.isTrueEvaluated;
 			this.isTrueEvaluated = this.testIfTrue();
 			if(var1 != this.isTrueEvaluated) {
-				MAtmosLogger.notice("(MAtmos) C:" + this.nickname + (this.isTrueEvaluated ? " now On." : " now Off."));
+				MAtmos.notice("(C): " + this.nickname + (this.isTrueEvaluated ? " now On." : " now Off."));
 			}
 
 			return this.isTrueEvaluated;
